@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: habit-coach-ai
+    runtime: python
+    plan: starter
+    region: frankfurt
+    buildCommand: "uv sync --frozen && uv run python manage.py collectstatic --no-input"
+    startCommand: "uv run gunicorn habit_coach_ai.wsgi:application --bind 0.0.0.0:$PORT"
+    preDeployCommand: "uv run python manage.py migrate --no-input"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12"
+      - key: DJANGO_SECRET_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: DEBUG
+        value: "False"
