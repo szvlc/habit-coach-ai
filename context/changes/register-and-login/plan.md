@@ -355,30 +355,30 @@ Phase 1 wymaga `rm db.sqlite3` lokalnie. Production Supabase jest fresh (deploy 
 
 #### Automatyczne
 
-- [x] 1.1 `manage.py check` przechodzi bez warnings
-- [x] 1.2 `manage.py makemigrations --check accounts` zwraca "No changes detected" po wygenerowaniu migracji
-- [x] 1.3 `manage.py migrate` przechodzi
-- [x] 1.4 Tabela `accounts_user` istnieje w db.sqlite3
+- [x] 1.1 `manage.py check` przechodzi bez warnings — cacec66
+- [x] 1.2 `manage.py makemigrations --check accounts` zwraca "No changes detected" po wygenerowaniu migracji — cacec66
+- [x] 1.3 `manage.py migrate` przechodzi — cacec66
+- [x] 1.4 Tabela `accounts_user` istnieje w db.sqlite3 — cacec66
 
 #### Ręczne
 
-- [x] 1.5 `manage.py createsuperuser` prosi o email i tworzy konto
-- [x] 1.6 `manage.py runserver` startuje bez błędu
-- [x] 1.7 `/admin/` — login po emailu działa, kolumna email widoczna
+- [x] 1.5 `manage.py createsuperuser` prosi o email i tworzy konto — cacec66
+- [x] 1.6 `manage.py runserver` startuje bez błędu — cacec66
+- [x] 1.7 `/admin/` — login po emailu działa, kolumna email widoczna — cacec66
 
 ### Faza 2: Auth views + URL wiring
 
 #### Automatyczne
 
-- [ ] 2.1 `manage.py check` przechodzi
-- [ ] 2.2 URL resolver pasuje endpointy: `/`, `/register/`, `/accounts/login/`, `/accounts/logout/`
+- [x] 2.1 `manage.py check` przechodzi
+- [x] 2.2 URL resolver pasuje endpointy: `/`, `/register/`, `/accounts/login/`, `/accounts/logout/`
 
 #### Ręczne
 
-- [ ] 2.3 `/register/` zwraca HTML (nawet jeśli nieostylowany)
-- [ ] 2.4 `/accounts/login/` zwraca HTML
-- [ ] 2.5 `/` niezalogowany → redirect do `/accounts/login/?next=/`
-- [ ] 2.6 `/` zalogowany jako superuser → HTML dashboard (template OK lub TemplateDoesNotExist w Phase 3)
+- [x] 2.3 `/register/` zwraca HTML (nawet jeśli nieostylowany)
+- [x] 2.4 `/accounts/login/` zwraca HTML
+- [x] 2.5 `/` niezalogowany → redirect do `/accounts/login/?next=/`
+- [x] 2.6 `/` zalogowany jako superuser → HTML dashboard (template OK lub TemplateDoesNotExist w Phase 3)
 
 ### Faza 3: Templates + Tailwind + Dashboard placeholder
 
