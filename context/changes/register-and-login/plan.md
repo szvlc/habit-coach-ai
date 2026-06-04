@@ -400,15 +400,15 @@ Phase 1 wymaga `rm db.sqlite3` lokalnie. Production Supabase jest fresh (deploy 
 
 #### Automatyczne
 
-- [x] 4.1 `manage.py test accounts` — wszystkie 6 testów zielone
-- [x] 4.2 `manage.py check --deploy` — brak critical warnings
-- [ ] 4.3 Render deploy log pokazuje `Applying accounts.0001_initial... OK` + `gunicorn` start + status `live`
+- [x] 4.1 `manage.py test accounts` — wszystkie 6 testów zielone — d3419ba
+- [x] 4.2 `manage.py check --deploy` — brak critical warnings — d3419ba
+- [x] 4.3 Render deploy log pokazuje `Applying accounts.0001_initial... OK` + `gunicorn` start + status `live` — d3419ba
 
 #### Ręczne
 
-- [ ] 4.4 `https://habit-coach-ai.onrender.com/accounts/login/` — Tailwind + polski OK
-- [ ] 4.5 Production: utworzenie nowego konta → auto-login → dashboard
-- [ ] 4.6 Production: logout via direct URL → redirect do login
-- [ ] 4.7 Production: re-login → dashboard
-- [ ] 4.8 Supabase Tables → `accounts_user` istnieje z wpisem
-- [ ] 4.9 Render Logs — brak 5xx po smoke test scenariuszu
+- [x] 4.4 `https://habit-coach-ai.onrender.com/accounts/login/` — Tailwind + polski OK — d3419ba
+- [x] 4.5 Production: utworzenie nowego konta → auto-login → dashboard — d3419ba
+- [x] 4.6 Production: logout via direct URL → redirect do login — d3419ba
+- [x] 4.7 Production: re-login → dashboard — d3419ba
+- [x] 4.8 Supabase Tables → `accounts_user` istnieje z wpisem — d3419ba
+- [x] 4.9 Render Logs — brak 5xx po smoke test scenariuszu — d3419ba
