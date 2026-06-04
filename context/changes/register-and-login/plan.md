@@ -370,31 +370,31 @@ Phase 1 wymaga `rm db.sqlite3` lokalnie. Production Supabase jest fresh (deploy 
 
 #### Automatyczne
 
-- [x] 2.1 `manage.py check` przechodzi
-- [x] 2.2 URL resolver pasuje endpointy: `/`, `/register/`, `/accounts/login/`, `/accounts/logout/`
+- [x] 2.1 `manage.py check` przechodzi — f582f9e
+- [x] 2.2 URL resolver pasuje endpointy: `/`, `/register/`, `/accounts/login/`, `/accounts/logout/` — f582f9e
 
 #### Ręczne
 
-- [x] 2.3 `/register/` zwraca HTML (nawet jeśli nieostylowany)
-- [x] 2.4 `/accounts/login/` zwraca HTML
-- [x] 2.5 `/` niezalogowany → redirect do `/accounts/login/?next=/`
-- [x] 2.6 `/` zalogowany jako superuser → HTML dashboard (template OK lub TemplateDoesNotExist w Phase 3)
+- [x] 2.3 `/register/` zwraca HTML (nawet jeśli nieostylowany) — f582f9e
+- [x] 2.4 `/accounts/login/` zwraca HTML — f582f9e
+- [x] 2.5 `/` niezalogowany → redirect do `/accounts/login/?next=/` — f582f9e
+- [x] 2.6 `/` zalogowany jako superuser → HTML dashboard (template OK lub TemplateDoesNotExist w Phase 3) — f582f9e
 
 ### Faza 3: Templates + Tailwind + Dashboard placeholder
 
 #### Automatyczne
 
-- [ ] 3.1 `manage.py check` przechodzi bez „template does not exist" dla `registration/login.html`
-- [ ] 3.2 `manage.py collectstatic --no-input --dry-run` przechodzi
+- [x] 3.1 `manage.py check` przechodzi bez „template does not exist" dla `registration/login.html`
+- [x] 3.2 `manage.py collectstatic --no-input --dry-run` przechodzi
 
 #### Ręczne
 
-- [ ] 3.3 `/accounts/login/` — login form z Tailwind styling, polskie etykiety
-- [ ] 3.4 `/register/` — register form z Tailwind styling, polskie etykiety
-- [ ] 3.5 Zły email format w register → polski komunikat błędu
-- [ ] 3.6 Rejestracja happy path: submit → auto-login → redirect do `/` → dashboard z empty-state CTA
-- [ ] 3.7 `/accounts/logout/` (direct URL) działa, redirect do login
-- [ ] 3.8 Re-login z istniejącym kontem działa
+- [x] 3.3 `/accounts/login/` — login form z Tailwind styling, polskie etykiety
+- [x] 3.4 `/register/` — register form z Tailwind styling, polskie etykiety
+- [x] 3.5 Zły email format w register → polski komunikat błędu
+- [x] 3.6 Rejestracja happy path: submit → auto-login → redirect do `/` → dashboard z empty-state CTA
+- [x] 3.7 `/accounts/logout/` (direct URL) działa, redirect do login
+- [x] 3.8 Re-login z istniejącym kontem działa
 
 ### Faza 4: Tests + production deploy weryfikacja
 

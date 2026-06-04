@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Zarejestruj się · HabitCoach AI{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-sm p-8">
+    <h1 class="text-2xl font-bold mb-2">Zarejestruj się</h1>
+    <p class="text-sm text-gray-600 mb-6">Załóż konto i zacznij śledzić swoje nawyki.</p>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="px-4 py-2 rounded bg-red-50 text-red-700 text-sm">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div>
+            <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium mb-1">Email</label>
+            <input
+                type="email"
+                name="{{ form.email.name }}"
+                id="{{ form.email.id_for_label }}"
+                value="{{ form.email.value|default:'' }}"
+                autocomplete="email"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+            {% if form.email.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.email.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium mb-1">Hasło</label>
+            <input
+                type="password"
+                name="{{ form.password1.name }}"
+                id="{{ form.password1.id_for_label }}"
+                autocomplete="new-password"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+            {% if form.password1.help_text %}
+                <div class="mt-1 text-xs text-gray-500">{{ form.password1.help_text|safe }}</div>
+            {% endif %}
+            {% if form.password1.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.password1.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium mb-1">Powtórz hasło</label>
+            <input
+                type="password"
+                name="{{ form.password2.name }}"
+                id="{{ form.password2.id_for_label }}"
+                autocomplete="new-password"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+            {% if form.password2.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.password2.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition">
+            Załóż konto
+        </button>
+    </form>
+
+    <p class="mt-6 text-sm text-gray-600 text-center">
+        Masz już konto?
+        <a href="{% url 'login' %}" class="text-indigo-600 hover:text-indigo-700 font-medium">Zaloguj się</a>
+    </p>
+</div>
+{% endblock %}
