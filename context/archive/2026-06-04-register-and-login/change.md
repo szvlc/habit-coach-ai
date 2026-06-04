@@ -1,10 +1,10 @@
 ---
 change_id: register-and-login
 title: Register and login
-status: implemented
+status: archived
 created: 2026-06-04
 updated: 2026-06-04
-archived_at: null
+archived_at: 2026-06-04T14:57:59Z
 ---
 
 ## Notes
