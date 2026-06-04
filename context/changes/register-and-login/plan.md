@@ -384,24 +384,24 @@ Phase 1 wymaga `rm db.sqlite3` lokalnie. Production Supabase jest fresh (deploy 
 
 #### Automatyczne
 
-- [x] 3.1 `manage.py check` przechodzi bez „template does not exist" dla `registration/login.html`
-- [x] 3.2 `manage.py collectstatic --no-input --dry-run` przechodzi
+- [x] 3.1 `manage.py check` przechodzi bez „template does not exist" dla `registration/login.html` — ec8b381
+- [x] 3.2 `manage.py collectstatic --no-input --dry-run` przechodzi — ec8b381
 
 #### Ręczne
 
-- [x] 3.3 `/accounts/login/` — login form z Tailwind styling, polskie etykiety
-- [x] 3.4 `/register/` — register form z Tailwind styling, polskie etykiety
-- [x] 3.5 Zły email format w register → polski komunikat błędu
-- [x] 3.6 Rejestracja happy path: submit → auto-login → redirect do `/` → dashboard z empty-state CTA
-- [x] 3.7 `/accounts/logout/` (direct URL) działa, redirect do login
-- [x] 3.8 Re-login z istniejącym kontem działa
+- [x] 3.3 `/accounts/login/` — login form z Tailwind styling, polskie etykiety — ec8b381
+- [x] 3.4 `/register/` — register form z Tailwind styling, polskie etykiety — ec8b381
+- [x] 3.5 Zły email format w register → polski komunikat błędu — ec8b381
+- [x] 3.6 Rejestracja happy path: submit → auto-login → redirect do `/` → dashboard z empty-state CTA — ec8b381
+- [x] 3.7 `/accounts/logout/` (direct URL) działa, redirect do login — ec8b381
+- [x] 3.8 Re-login z istniejącym kontem działa — ec8b381
 
 ### Faza 4: Tests + production deploy weryfikacja
 
 #### Automatyczne
 
-- [ ] 4.1 `manage.py test accounts` — wszystkie 6 testów zielone
-- [ ] 4.2 `manage.py check --deploy` — brak critical warnings
+- [x] 4.1 `manage.py test accounts` — wszystkie 6 testów zielone
+- [x] 4.2 `manage.py check --deploy` — brak critical warnings
 - [ ] 4.3 Render deploy log pokazuje `Applying accounts.0001_initial... OK` + `gunicorn` start + status `live`
 
 #### Ręczne
