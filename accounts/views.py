@@ -18,4 +18,4 @@ class RegisterView(CreateView):
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
-    template_name = "dashboard.html"
+    template_name = "accounts/dashboard.html"

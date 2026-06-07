@@ -146,4 +146,15 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'accounts:dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 
+# Production security: HTTPS-only cookies, proxy-aware HTTPS detection, HSTS.
+# Gated on `not DEBUG` so local `runserver` over plain HTTP still works.
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_SSL_REDIRECT = not DEBUG
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_HSTS_SECONDS = 60 * 60 * 24 * 30 if not DEBUG else 0  # 30 days; ramp to 1 year + preload later
+CSRF_TRUSTED_ORIGINS = [
+    o.strip() for o in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()
+]
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

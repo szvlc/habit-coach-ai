@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 User = get_user_model()
@@ -7,6 +7,7 @@ User = get_user_model()
 STRONG_PASSWORD = "ZQ4!yt8mxL2p"
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class RegisterViewTests(TestCase):
     def test_register_creates_user_and_logs_in(self):
         response = self.client.post(
@@ -38,6 +39,7 @@ class RegisterViewTests(TestCase):
         self.assertFalse(User.objects.filter(email="weak@example.com").exists())
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class LoginViewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(email="login@example.com", password=STRONG_PASSWORD)
@@ -60,6 +62,7 @@ class LoginViewTests(TestCase):
         self.assertNotIn("_auth_user_id", self.client.session)
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class DashboardViewTests(TestCase):
     def test_dashboard_requires_login(self):
         response = self.client.get(reverse("accounts:dashboard"))
