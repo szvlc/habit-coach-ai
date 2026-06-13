@@ -4,17 +4,32 @@
 
 {% block content %}
 <div class="bg-white rounded-lg shadow-sm p-8">
-    <h1 class="text-2xl font-bold mb-1">Witaj, {{ user.email }}</h1>
-    <p class="text-gray-600 mb-8">Twoje nawyki pojawią się tutaj.</p>
+    <h1 class="text-2xl font-bold mb-6">Witaj, {{ user.email }}</h1>
 
-    {# Empty-state CTA — placeholder href until S-02 wires habit creation #}
-    {# TODO(S-02): replace href="#" with {% url 'habits:add' %} once the habits app exists #}
-    <div class="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center">
-        <p class="text-gray-600 mb-4">Nie masz jeszcze żadnych nawyków.</p>
-        <a href="#"
+    {% if habits %}
+        <ul class="divide-y divide-gray-100 mb-6">
+            {% for habit in habits %}
+                <li class="flex items-center justify-between py-3">
+                    <span class="font-medium">{{ habit.name }}</span>
+                    <span class="flex items-center gap-4 text-sm">
+                        <a href="{% url 'habits:edit' habit.pk %}" class="text-indigo-600 hover:text-indigo-700">Edytuj</a>
+                        <a href="{% url 'habits:archive' habit.pk %}" class="text-gray-500 hover:text-red-600">Archiwizuj</a>
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'habits:add' %}"
            class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-md transition">
-            Dodaj swój pierwszy nawyk
+            Dodaj kolejny
         </a>
-    </div>
+    {% else %}
+        <div class="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center">
+            <p class="text-gray-600 mb-4">Nie masz jeszcze żadnych nawyków.</p>
+            <a href="{% url 'habits:add' %}"
+               class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-md transition">
+                Dodaj swój pierwszy nawyk
+            </a>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

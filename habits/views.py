@@ -13,6 +13,11 @@ class HabitCreateView(LoginRequiredMixin, CreateView):
     template_name = "habits/habit_form.html"
     success_url = reverse_lazy("accounts:dashboard")
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
@@ -25,6 +30,11 @@ class HabitUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self):
         return Habit.objects.filter(user=self.request.user)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
 
 class HabitArchiveView(LoginRequiredMixin, View):
