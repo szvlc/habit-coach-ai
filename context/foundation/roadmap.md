@@ -3,7 +3,7 @@ project: HabitCoach AI
 version: 1
 status: draft
 created: 2026-05-30
-updated: 2026-06-07
+updated: 2026-06-13
 prd_version: 1
 main_goal: market-feedback
 top_blocker: decisions
@@ -33,7 +33,7 @@ Sekwencja jest sortowana pod kątem `market-feedback`: szybkie wystawienie ście
 | ----- | -------------------------------------- | -------------------------------------------------------------------------- | ----------------- | ------------------------------ | -------- |
 | F-01  | `render-deploy-operational`            | (fundament) pierwszy Render deploy zielony, Supabase Postgres osiągalny    | —                 | infrastructure.md §Recommendation | done     |
 | S-01  | `register-and-login`                   | zarejestrować konto i zalogować się email+hasło z długą sesją              | F-01              | US-01, FR-001, FR-002          | done     |
-| S-02  | `manage-habits`                        | dodać, edytować nazwę i zarchiwizować nawyk                                | S-01              | US-01, FR-005, FR-006, FR-007  | proposed |
+| S-02  | `manage-habits`                        | dodać, edytować nazwę i zarchiwizować nawyk                                | S-01              | US-01, FR-005, FR-006, FR-007  | done     |
 | S-03  | `log-execution-and-history`            | jednym kliknięciem zalogować wykonanie i zobaczyć 30 dni historii          | S-02              | US-01, FR-008, FR-009, FR-010  | proposed |
 | S-04  | `first-grounded-recommendation`        | wygenerować rekomendację AI cytującą jego rzeczywistą historię             | S-03              | US-01, FR-011, FR-012          | proposed |
 | S-05  | `password-reset-via-email`             | zresetować zapomniane hasło przez link na email                            | S-01              | FR-003                         | blocked  |
@@ -99,7 +99,7 @@ Co już jest na miejscu w bazie kodu na 2026-05-30 (automatycznie zbadane + potw
 - **Blokady:** —
 - **Niewiadome:** —
 - **Ryzyko:** Pierwszy project app — wymaga `uv run python manage.py startapp habits` + wpisania do INSTALLED_APPS + URL routing. Model `Habit` z polami `name`, `user (FK)`, `archived (bool)`, `created_at`. Archiwizacja przez `archived=True`, NIE `DELETE` (FR-007 — historia musi pozostać dla AI w S-04).
-- **Status:** proposed
+- **Status:** done
 
 ### S-03: Logowanie wykonania + widok historii 30 dni
 
@@ -205,3 +205,4 @@ Co już jest na miejscu w bazie kodu na 2026-05-30 (automatycznie zbadane + potw
 
 - **F-01: Pierwszy Render deploy zielony** — Operacyjny od 2026-06-07; weryfikacja w `context/deployment/deploy-plan.md`. Lekcja: —.
 - **S-01: Rejestracja i logowanie email+hasło** — Zarchiwizowano 2026-06-04 → `context/archive/2026-06-04-register-and-login/`. Retro 2026-06-07 → `context/archive/2026-06-07-register-and-login-retro/`. Lekcja: success-criteria sign-off must actually read the command output (`context/foundation/lessons.md`).
+- **S-02: Zarządzanie nawykami (dodawanie, edycja, archiwizacja)** — Zarchiwizowano 2026-06-13 → `context/archive/2026-06-07-manage-habits/`. Lekcja: egzekwuj wielopolowy UniqueConstraint jawnie w formularzu, nie przez validate_unique (`context/foundation/lessons.md`).

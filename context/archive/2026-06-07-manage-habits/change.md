@@ -1,10 +1,10 @@
 ---
 change_id: manage-habits
 title: Manage habits
-status: impl_reviewed
+status: archived
 created: 2026-06-07
 updated: 2026-06-13
-archived_at: null
+archived_at: 2026-06-13T10:40:12Z
 ---
 
 ## Notes
