@@ -435,27 +435,27 @@ NFR <200ms na toggle: endpoint robi 1 lookup nawyku (isolation) + 1 zapytanie o 
 
 #### Automatyczne
 
-- [x] 3.1 `manage.py check` przechodzi bez „template does not exist"
-- [x] 3.2 `manage.py collectstatic --no-input --dry-run` przechodzi
-- [x] 3.3 URL resolver pasuje `/habits/history/`
+- [x] 3.1 `manage.py check` przechodzi bez „template does not exist" — 964bbc5
+- [x] 3.2 `manage.py collectstatic --no-input --dry-run` przechodzi — 964bbc5
+- [x] 3.3 URL resolver pasuje `/habits/history/` — 964bbc5
 
 #### Ręczne
 
-- [x] 3.4 `/habits/history/` → siatka aktywne × 30 dni; dzisiejsze wpisy oznaczone
-- [x] 3.5 Zarchiwizowany nawyk nieobecny w siatce
-- [x] 3.6 Świeży user bez nawyków → empty-state z linkiem do `/habits/add/`
-- [x] 3.7 User z nawykami bez logowań → siatka z pustymi komórkami
-- [x] 3.8 Mobile/wąsko → siatka scrolluje poziomo; reszta stron bez zmian szerokości
-- [x] 3.9 Link „Historia" na dashboardzie → `/habits/history/`
+- [x] 3.4 `/habits/history/` → siatka aktywne × 30 dni; dzisiejsze wpisy oznaczone — 964bbc5
+- [x] 3.5 Zarchiwizowany nawyk nieobecny w siatce — 964bbc5
+- [x] 3.6 Świeży user bez nawyków → empty-state z linkiem do `/habits/add/` — 964bbc5
+- [x] 3.7 User z nawykami bez logowań → siatka z pustymi komórkami — 964bbc5
+- [x] 3.8 Mobile/wąsko → siatka scrolluje poziomo; reszta stron bez zmian szerokości — 964bbc5
+- [x] 3.9 Link „Historia" na dashboardzie → `/habits/history/` — 964bbc5
 
 ### Faza 4: Testy (pełna matryca) + deployment verify
 
 #### Automatyczne
 
-- [ ] 4.1 `manage.py test habits` — wszystkie zielone (~14 nowych + S-02)
-- [ ] 4.2 `manage.py test accounts` — zielone (poprzednie + 1 nowy)
-- [ ] 4.3 `manage.py test` (całość) — green
-- [ ] 4.4 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021)
+- [x] 4.1 `manage.py test habits` — wszystkie zielone (28: 13 S-02 + 15 nowych)
+- [x] 4.2 `manage.py test accounts` — zielone (9: 8 + 1 nowy)
+- [x] 4.3 `manage.py test` (całość) — green (37)
+- [x] 4.4 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021)
 - [ ] 4.5 Render deploy log: `Applying habits.0002... OK` + service `live`
 
 #### Ręczne

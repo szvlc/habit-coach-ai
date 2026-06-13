@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 from django.urls import reverse
+from django.utils import timezone
 
-from habits.models import Habit
+from habits.models import Habit, HabitExecution
 
 User = get_user_model()
 
@@ -92,3 +93,16 @@ class DashboardViewTests(TestCase):
         response = self.client.get(reverse("accounts:dashboard"))
 
         self.assertNotIn(habit_a, list(response.context["habits"]))
+
+    def test_dashboard_marks_habit_done_today(self):
+        user = User.objects.create_user(email="done@example.com", password=STRONG_PASSWORD)
+        done = Habit.objects.create(user=user, name="Zrobiony")
+        not_done = Habit.objects.create(user=user, name="Niezrobiony")
+        HabitExecution.objects.create(habit=done, date=timezone.localdate())
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("accounts:dashboard"))
+
+        flags = {h.name: h.done_today for h in response.context["habits"]}
+        self.assertTrue(flags["Zrobiony"])
+        self.assertFalse(flags["Niezrobiony"])
