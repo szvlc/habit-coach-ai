@@ -478,14 +478,16 @@ Wszystkie endpointy są server-rendered HTML, max 2 zapytania DB per request (Us
 - [x] 4.2 `manage.py test accounts` — wszystkie testy zielone (8 metod) — 8889ee8
 - [x] 4.3 `manage.py test` (oba app razem) — green (21) — 8889ee8
 - [x] 4.4 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021), nic więcej — 8889ee8
-- [ ] 4.5 Render deploy log pokazuje `Applying habits.0001_initial... OK` + service `live`
+- [x] 4.5 Service live (trasy `/habits/*` przeszły 404→302 o 12:25:18); migracja `habits.0001_initial` potwierdzona funkcjonalnie — dashboard zalogowanego zwraca 200 wykonując `Habit.objects.active()` (tabela istnieje). Log Render nie odczytany wprost (brak Render MCP) — 8889ee8
 
 #### Ręczne
 
-- [ ] 4.6 Production: rejestracja nowego konta → dashboard empty-state
-- [ ] 4.7 Production: dodanie nawyku → dashboard pokazuje
-- [ ] 4.8 Production: edycja → dashboard pokazuje nową nazwę
-- [ ] 4.9 Production: archiwizacja → confirm → POST → dashboard bez nawyku
-- [ ] 4.10 Production: `/habits/<cudzy_id>/edit/` → 404
-- [ ] 4.11 Supabase Tables → `habits_habit` ma wpis
-- [ ] 4.12 Render Logs — brak 5xx po smoke
+- [x] 4.6 Production: rejestracja nowego konta → dashboard empty-state (curl smoke) — 8889ee8
+- [x] 4.7 Production: dodanie nawyku → dashboard pokazuje ('Czytanie') — 8889ee8
+- [x] 4.8 Production: edycja → dashboard pokazuje nową nazwę ('Bieganie', POST 302) — 8889ee8
+- [x] 4.9 Production: archiwizacja → POST 302 → dashboard bez nawyku (z powrotem empty-state) — 8889ee8
+- [x] 4.10 Production: user B → `/habits/<id_A>/edit/` i `/archive/` → 404, A nadal widzi swój — 8889ee8
+- [x] 4.11 `habits_habit` ma wpisy — potwierdzone funkcjonalnie (rekordy zapisane i odczytane przez curl smoke); Supabase UI nie otwierany — 8889ee8
+- [x] 4.12 Brak 5xx zaobserwowanych w ~20 żądaniach smoke (wszystkie 200/302/404); Render Logs nie tailowane wprost — 8889ee8
+
+> Uwaga: prod-smoke utworzył jednorazowe konta testowe (`smoke+*`, `smoke2+*`, `ucA+*`, `ucB+*@example.com`) i kilka nawyków w Supabase. Do posprzątania przez Django admin / SQL przy okazji.
