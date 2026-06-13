@@ -402,17 +402,17 @@ NFR <200ms na toggle: endpoint robi 1 lookup nawyku (isolation) + 1 zapytanie o 
 
 #### Automatyczne
 
-- [ ] 1.1 `manage.py check` przechodzi bez warnings
-- [ ] 1.2 `manage.py makemigrations --check habits` zwraca „No changes detected" po wygenerowaniu
-- [ ] 1.3 `manage.py migrate` przechodzi
-- [ ] 1.4 Tabela `habits_habitexecution` istnieje w db.sqlite3
+- [x] 1.1 `manage.py check` przechodzi bez warnings
+- [x] 1.2 `manage.py makemigrations --check habits` zwraca „No changes detected" po wygenerowaniu
+- [x] 1.3 `manage.py migrate` przechodzi
+- [x] 1.4 Tabela `habits_habitexecution` istnieje w db.sqlite3
 
 #### Ręczne
 
-- [ ] 1.5 `runserver` startuje bez błędu
-- [ ] 1.6 `/admin/` — sekcja „Habit executions" z list_display + filtrem po dacie
-- [ ] 1.7 Duplikat `(habit, date)` przez admin → UniqueConstraint blokuje
-- [ ] 1.8 `timezone.localdate()` w shell zwraca datę wg Europe/Warsaw
+- [x] 1.5 `runserver` startuje bez błędu
+- [x] 1.6 `/admin/` — sekcja „Habit executions" z list_display + filtrem po dacie
+- [x] 1.7 Duplikat `(habit, date)` przez admin → UniqueConstraint blokuje
+- [x] 1.8 `timezone.localdate()` w shell zwraca datę wg Europe/Warsaw
 
 ### Faza 2: Toggle endpoint + HTMX + integracja dashboardu
 

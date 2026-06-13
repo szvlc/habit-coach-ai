@@ -30,3 +30,39 @@ class Habit(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class HabitExecutionManager(models.Manager):
+    def done_habit_ids_for(self, user, on_date):
+        return set(
+            self.filter(habit__user=user, date=on_date).values_list("habit_id", flat=True)
+        )
+
+    def history_for(self, user, since_date):
+        return self.filter(
+            habit__user=user, habit__archived=False, date__gte=since_date
+        )
+
+
+class HabitExecution(models.Model):
+    habit = models.ForeignKey(
+        "habits.Habit",
+        on_delete=models.CASCADE,
+        related_name="executions",
+    )
+    date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = HabitExecutionManager()
+
+    class Meta:
+        ordering = ["-date"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["habit", "date"],
+                name="unique_execution_per_habit_day",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.habit.name} @ {self.date}"
