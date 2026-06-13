@@ -427,48 +427,48 @@ Wszystkie endpointy są server-rendered HTML, max 2 zapytania DB per request (Us
 
 #### Automatyczne
 
-- [x] 1.1 `manage.py check` przechodzi bez warnings
-- [x] 1.2 `manage.py makemigrations --check habits` zwraca "No changes detected" po wygenerowaniu migracji
-- [x] 1.3 `manage.py migrate` przechodzi
-- [x] 1.4 Tabela `habits_habit` istnieje w db.sqlite3
+- [x] 1.1 `manage.py check` przechodzi bez warnings — 519e948
+- [x] 1.2 `manage.py makemigrations --check habits` zwraca "No changes detected" po wygenerowaniu migracji — 519e948
+- [x] 1.3 `manage.py migrate` przechodzi — 519e948
+- [x] 1.4 Tabela `habits_habit` istnieje w db.sqlite3 — 519e948
 
 #### Ręczne
 
-- [x] 1.5 `manage.py runserver` startuje bez błędu
-- [x] 1.6 `/admin/` — sekcja "Habits" widoczna z list_display + filter
-- [x] 1.7 Próba dodania duplikatu nazwy przez admin → UniqueConstraint blokuje
+- [x] 1.5 `manage.py runserver` startuje bez błędu — 519e948
+- [x] 1.6 `/admin/` — sekcja "Habits" widoczna z list_display + filter — 519e948
+- [x] 1.7 Próba dodania duplikatu nazwy przez admin → UniqueConstraint blokuje — 519e948
 
 ### Faza 2: Views + URL wiring + DashboardView update
 
 #### Automatyczne
 
-- [ ] 2.1 `manage.py check` przechodzi
-- [ ] 2.2 URL resolver pasuje endpointy: `/habits/add/`, `/habits/<int>/edit/`, `/habits/<int>/archive/`
-- [ ] 2.3 Brak ImportError przy `from habits.models import Habit` w accounts/views.py
+- [x] 2.1 `manage.py check` przechodzi — 229b22a
+- [x] 2.2 URL resolver pasuje endpointy: `/habits/add/`, `/habits/<int>/edit/`, `/habits/<int>/archive/` — 229b22a
+- [x] 2.3 Brak ImportError przy `from habits.models import Habit` w accounts/views.py — 229b22a
 
 #### Ręczne
 
-- [ ] 2.4 `/habits/add/` (zalogowany) → 200 lub TemplateDoesNotExist (OK przed Phase 3)
-- [ ] 2.5 `/habits/<id>/edit/` jako NIE-owner → 404
-- [ ] 2.6 `/habits/<id>/archive/` jako NIE-owner → 404 (GET i POST)
+- [x] 2.4 `/habits/add/` (zalogowany) → 200 lub TemplateDoesNotExist (OK przed Phase 3) — 229b22a
+- [x] 2.5 `/habits/<id>/edit/` jako NIE-owner → 404 — 229b22a
+- [x] 2.6 `/habits/<id>/archive/` jako NIE-owner → 404 (GET i POST) — 229b22a
 
 ### Faza 3: Templates + dashboard rewrite
 
 #### Automatyczne
 
-- [ ] 3.1 `manage.py check` przechodzi bez "template does not exist"
-- [ ] 3.2 `manage.py collectstatic --no-input --dry-run` przechodzi
+- [x] 3.1 `manage.py check` przechodzi bez "template does not exist" — 5b88985
+- [x] 3.2 `manage.py collectstatic --no-input --dry-run` przechodzi — 5b88985
 
 #### Ręczne
 
-- [ ] 3.3 `/habits/add/` — formularz z Tailwind styling, polski label
-- [ ] 3.4 Submit pusty name → walidacja błąd
-- [ ] 3.5 Submit duplicate name → walidacja błąd
-- [ ] 3.6 Submit prawidłowy → redirect `/`, nawyk widoczny na dashbordzie
-- [ ] 3.7 Dashboard pusty (świeży user) → empty-state CTA z linkiem do `/habits/add/`
-- [ ] 3.8 Dashboard z nawykami → lista z "Edytuj" / "Archiwizuj" + "Dodaj kolejny"
-- [ ] 3.9 Klik "Edytuj" → form pre-filled → zmień nazwę → dashboard z nową
-- [ ] 3.10 Klik "Archiwizuj" → confirm page → POST → dashboard bez tego nawyku
+- [x] 3.3 `/habits/add/` — formularz z Tailwind styling, polski label — 5b88985
+- [x] 3.4 Submit pusty name → walidacja błąd — 5b88985
+- [x] 3.5 Submit duplicate name → walidacja błąd (fix: 500→walidacja, patrz commit body) — 5b88985
+- [x] 3.6 Submit prawidłowy → redirect `/`, nawyk widoczny na dashbordzie — 5b88985
+- [x] 3.7 Dashboard pusty (świeży user) → empty-state CTA z linkiem do `/habits/add/` — 5b88985
+- [x] 3.8 Dashboard z nawykami → lista z "Edytuj" / "Archiwizuj" + "Dodaj kolejny" — 5b88985
+- [x] 3.9 Klik "Edytuj" → form pre-filled → zmień nazwę → dashboard z nową — 5b88985
+- [x] 3.10 Klik "Archiwizuj" → confirm page → POST → dashboard bez tego nawyku — 5b88985
 
 ### Faza 4: Tests + per-user isolation matrix + deployment verify
 
