@@ -9,5 +9,6 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),  # /accounts/login/, /accounts/logout/, /accounts/password_*/
+    path("habits/", include("habits.urls")),  # /habits/add/, /habits/<id>/edit/, /habits/<id>/archive/
     path("", include("accounts.urls")),  # /register/, /
 ]
