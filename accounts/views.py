@@ -1,9 +1,10 @@
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import CreateView, TemplateView
 
-from habits.models import Habit
+from habits.models import Habit, HabitExecution
 
 from .forms import CustomUserCreationForm
 
@@ -24,5 +25,11 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["habits"] = Habit.objects.active(self.request.user)
+        habits = list(Habit.objects.active(self.request.user))
+        done_ids = HabitExecution.objects.done_habit_ids_for(
+            self.request.user, timezone.localdate()
+        )
+        for habit in habits:
+            habit.done_today = habit.pk in done_ids
+        context["habits"] = habits
         return context

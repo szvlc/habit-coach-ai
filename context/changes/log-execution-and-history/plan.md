@@ -402,34 +402,34 @@ NFR <200ms na toggle: endpoint robi 1 lookup nawyku (isolation) + 1 zapytanie o 
 
 #### Automatyczne
 
-- [x] 1.1 `manage.py check` przechodzi bez warnings
-- [x] 1.2 `manage.py makemigrations --check habits` zwraca „No changes detected" po wygenerowaniu
-- [x] 1.3 `manage.py migrate` przechodzi
-- [x] 1.4 Tabela `habits_habitexecution` istnieje w db.sqlite3
+- [x] 1.1 `manage.py check` przechodzi bez warnings — 02adc03
+- [x] 1.2 `manage.py makemigrations --check habits` zwraca „No changes detected" po wygenerowaniu — 02adc03
+- [x] 1.3 `manage.py migrate` przechodzi — 02adc03
+- [x] 1.4 Tabela `habits_habitexecution` istnieje w db.sqlite3 — 02adc03
 
 #### Ręczne
 
-- [x] 1.5 `runserver` startuje bez błędu
-- [x] 1.6 `/admin/` — sekcja „Habit executions" z list_display + filtrem po dacie
-- [x] 1.7 Duplikat `(habit, date)` przez admin → UniqueConstraint blokuje
-- [x] 1.8 `timezone.localdate()` w shell zwraca datę wg Europe/Warsaw
+- [x] 1.5 `runserver` startuje bez błędu — 02adc03
+- [x] 1.6 `/admin/` — sekcja „Habit executions" z list_display + filtrem po dacie — 02adc03
+- [x] 1.7 Duplikat `(habit, date)` przez admin → UniqueConstraint blokuje — 02adc03
+- [x] 1.8 `timezone.localdate()` w shell zwraca datę wg Europe/Warsaw — 02adc03
 
 ### Faza 2: Toggle endpoint + HTMX + integracja dashboardu
 
 #### Automatyczne
 
-- [ ] 2.1 `manage.py check` przechodzi
-- [ ] 2.2 URL resolver pasuje `/habits/<int>/toggle/`
-- [ ] 2.3 Brak ImportError (`HabitExecution`, `timezone` w accounts/views.py)
+- [x] 2.1 `manage.py check` przechodzi
+- [x] 2.2 URL resolver pasuje `/habits/<int>/toggle/`
+- [x] 2.3 Brak ImportError (`HabitExecution`, `timezone` w accounts/views.py)
 
 #### Ręczne
 
-- [ ] 2.4 Dashboard: przycisk „Oznacz wykonane" przy każdym nawyku
-- [ ] 2.5 Klik → „✓ Zrobione dziś" bez reloadu (HTMX swap), <200ms
-- [ ] 2.6 Ponowny klik → undo; w DB brak wiersza
-- [ ] 2.7 Odświeżenie → stan utrzymany
-- [ ] 2.8 Toggle jako NIE-owner → 404; na zarchiwizowanym → 404
-- [ ] 2.9 Bez JS → toggle robi redirect na dashboard (fallback)
+- [x] 2.4 Dashboard: przycisk „Oznacz wykonane" przy każdym nawyku
+- [x] 2.5 Klik → „✓ Zrobione dziś" bez reloadu (HTMX swap), <200ms
+- [x] 2.6 Ponowny klik → undo; w DB brak wiersza
+- [x] 2.7 Odświeżenie → stan utrzymany
+- [x] 2.8 Toggle jako NIE-owner → 404; na zarchiwizowanym → 404
+- [x] 2.9 Bez JS → toggle robi redirect na dashboard (fallback)
 
 ### Faza 3: Read-only widok historii 30 dni
 
