@@ -9,4 +9,5 @@ urlpatterns = [
     path("<int:pk>/edit/", views.HabitUpdateView.as_view(), name="edit"),
     path("<int:pk>/archive/", views.HabitArchiveView.as_view(), name="archive"),
     path("<int:pk>/toggle/", views.HabitToggleView.as_view(), name="toggle"),
+    path("history/", views.HabitHistoryView.as_view(), name="history"),
 ]

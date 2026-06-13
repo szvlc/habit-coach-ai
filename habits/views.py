@@ -1,12 +1,16 @@
+from datetime import timedelta
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import View
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, TemplateView, UpdateView
 
 from .forms import HabitForm
 from .models import Habit, HabitExecution
+
+HISTORY_DAYS = 30
 
 
 class HabitCreateView(LoginRequiredMixin, CreateView):
@@ -71,3 +75,28 @@ class HabitToggleView(LoginRequiredMixin, View):
                 request, "habits/_toggle_button.html", {"habit": habit, "done": done}
             )
         return redirect("accounts:dashboard")
+
+
+class HabitHistoryView(LoginRequiredMixin, TemplateView):
+    template_name = "habits/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        today = timezone.localdate()
+        start = today - timedelta(days=HISTORY_DAYS - 1)
+        days = [start + timedelta(days=offset) for offset in range(HISTORY_DAYS)]
+        habits = list(Habit.objects.active(user))
+        done = set(
+            HabitExecution.objects.history_for(user, start).values_list("habit_id", "date")
+        )
+        context["today"] = today
+        context["days"] = days
+        context["rows"] = [
+            {
+                "habit": habit,
+                "cells": [{"date": day, "done": (habit.pk, day) in done} for day in days],
+            }
+            for habit in habits
+        ]
+        return context

@@ -418,35 +418,35 @@ NFR <200ms na toggle: endpoint robi 1 lookup nawyku (isolation) + 1 zapytanie o 
 
 #### Automatyczne
 
-- [x] 2.1 `manage.py check` przechodzi
-- [x] 2.2 URL resolver pasuje `/habits/<int>/toggle/`
-- [x] 2.3 Brak ImportError (`HabitExecution`, `timezone` w accounts/views.py)
+- [x] 2.1 `manage.py check` przechodzi — bf96ddc
+- [x] 2.2 URL resolver pasuje `/habits/<int>/toggle/` — bf96ddc
+- [x] 2.3 Brak ImportError (`HabitExecution`, `timezone` w accounts/views.py) — bf96ddc
 
 #### Ręczne
 
-- [x] 2.4 Dashboard: przycisk „Oznacz wykonane" przy każdym nawyku
-- [x] 2.5 Klik → „✓ Zrobione dziś" bez reloadu (HTMX swap), <200ms
-- [x] 2.6 Ponowny klik → undo; w DB brak wiersza
-- [x] 2.7 Odświeżenie → stan utrzymany
-- [x] 2.8 Toggle jako NIE-owner → 404; na zarchiwizowanym → 404
-- [x] 2.9 Bez JS → toggle robi redirect na dashboard (fallback)
+- [x] 2.4 Dashboard: przycisk „Oznacz wykonane" przy każdym nawyku — bf96ddc
+- [x] 2.5 Klik → „✓ Zrobione dziś" bez reloadu (HTMX swap), <200ms — bf96ddc
+- [x] 2.6 Ponowny klik → undo; w DB brak wiersza — bf96ddc
+- [x] 2.7 Odświeżenie → stan utrzymany — bf96ddc
+- [x] 2.8 Toggle jako NIE-owner → 404; na zarchiwizowanym → 404 — bf96ddc
+- [x] 2.9 Bez JS → toggle robi redirect na dashboard (fallback) — bf96ddc
 
 ### Faza 3: Read-only widok historii 30 dni
 
 #### Automatyczne
 
-- [ ] 3.1 `manage.py check` przechodzi bez „template does not exist"
-- [ ] 3.2 `manage.py collectstatic --no-input --dry-run` przechodzi
-- [ ] 3.3 URL resolver pasuje `/habits/history/`
+- [x] 3.1 `manage.py check` przechodzi bez „template does not exist"
+- [x] 3.2 `manage.py collectstatic --no-input --dry-run` przechodzi
+- [x] 3.3 URL resolver pasuje `/habits/history/`
 
 #### Ręczne
 
-- [ ] 3.4 `/habits/history/` → siatka aktywne × 30 dni; dzisiejsze wpisy oznaczone
-- [ ] 3.5 Zarchiwizowany nawyk nieobecny w siatce
-- [ ] 3.6 Świeży user bez nawyków → empty-state z linkiem do `/habits/add/`
-- [ ] 3.7 User z nawykami bez logowań → siatka z pustymi komórkami
-- [ ] 3.8 Mobile/wąsko → siatka scrolluje poziomo; reszta stron bez zmian szerokości
-- [ ] 3.9 Link „Historia" na dashboardzie → `/habits/history/`
+- [x] 3.4 `/habits/history/` → siatka aktywne × 30 dni; dzisiejsze wpisy oznaczone
+- [x] 3.5 Zarchiwizowany nawyk nieobecny w siatce
+- [x] 3.6 Świeży user bez nawyków → empty-state z linkiem do `/habits/add/`
+- [x] 3.7 User z nawykami bez logowań → siatka z pustymi komórkami
+- [x] 3.8 Mobile/wąsko → siatka scrolluje poziomo; reszta stron bez zmian szerokości
+- [x] 3.9 Link „Historia" na dashboardzie → `/habits/history/`
 
 ### Faza 4: Testy (pełna matryca) + deployment verify
 
