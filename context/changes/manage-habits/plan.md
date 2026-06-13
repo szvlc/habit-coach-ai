@@ -474,10 +474,10 @@ Wszystkie endpointy są server-rendered HTML, max 2 zapytania DB per request (Us
 
 #### Automatyczne
 
-- [ ] 4.1 `manage.py test habits` — wszystkie testy zielone (~13 metod)
-- [ ] 4.2 `manage.py test accounts` — wszystkie testy zielone (8 metod)
-- [ ] 4.3 `manage.py test` (oba app razem) — green
-- [ ] 4.4 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021), nic więcej
+- [x] 4.1 `manage.py test habits` — wszystkie testy zielone (13 metod) — 8889ee8
+- [x] 4.2 `manage.py test accounts` — wszystkie testy zielone (8 metod) — 8889ee8
+- [x] 4.3 `manage.py test` (oba app razem) — green (21) — 8889ee8
+- [x] 4.4 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021), nic więcej — 8889ee8
 - [ ] 4.5 Render deploy log pokazuje `Applying habits.0001_initial... OK` + service `live`
 
 #### Ręczne
