@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
+from habits.models import Habit
+
 User = get_user_model()
 
 STRONG_PASSWORD = "ZQ4!yt8mxL2p"
@@ -70,3 +72,23 @@ class DashboardViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse("login"), response.url)
         self.assertIn("next=", response.url)
+
+    def test_dashboard_shows_users_active_habits(self):
+        user = User.objects.create_user(email="dash@example.com", password=STRONG_PASSWORD)
+        active = Habit.objects.create(user=user, name="Aktywny")
+        Habit.objects.create(user=user, name="Zarchiwizowany", archived=True)
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("accounts:dashboard"))
+
+        self.assertEqual(list(response.context["habits"]), [active])
+
+    def test_dashboard_does_not_show_other_users_habits(self):
+        user_a = User.objects.create_user(email="a@example.com", password=STRONG_PASSWORD)
+        user_b = User.objects.create_user(email="b@example.com", password=STRONG_PASSWORD)
+        habit_a = Habit.objects.create(user=user_a, name="Nawyk A")
+        self.client.force_login(user_b)
+
+        response = self.client.get(reverse("accounts:dashboard"))
+
+        self.assertNotIn(habit_a, list(response.context["habits"]))
