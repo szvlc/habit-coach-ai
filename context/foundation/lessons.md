@@ -27,3 +27,10 @@
   checklist; every `/10x-implement` and `/10x-impl-review` gate that consumes
   one; especially Django/Rails `check --deploy`-style commands that surface
   many warnings of varying severity.>
+
+## Egzekwuj wielopolowy UniqueConstraint jawnie w formularzu, nie przez validate_unique
+
+- **Context**: Każdy Django ModelForm walidujący unikalność, gdzie część pól constraintu jest ustawiana poza formularzem (np. `user` w `form_valid`/`get_form_kwargs`); modele z `UniqueConstraint` na wielu polach.
+- **Problem**: `ModelForm.validate_unique()` wyklucza pola spoza formularza, więc `UniqueConstraint` obejmujący takie pole (np. `(user, name)`) jest cicho pomijany — duplikat przechodzi walidację i leci do DB → `IntegrityError` 500 zamiast przyjaznego błędu pola. Zdarzyło się w manage-habits S-02 (`HabitForm`).
+- **Rule**: Gdy `UniqueConstraint` obejmuje pole ustawiane poza formularzem, nie polegaj na `ModelForm.validate_unique` — przekaż to pole do formularza i sprawdź duplikat jawnie w `clean_<field>` (wykluczając `self.instance.pk` przy edycji), a `UniqueConstraint` w modelu zostaw jako backstop integralności.
+- **Applies to**: plan, implement, impl-review
