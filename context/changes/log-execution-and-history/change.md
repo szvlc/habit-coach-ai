@@ -1,9 +1,9 @@
 ---
 change_id: log-execution-and-history
 title: Log execution and history
-status: implemented
+status: impl_reviewed
 created: 2026-06-13
-updated: 2026-06-13
+updated: 2026-06-20
 archived_at: null
 ---
 
