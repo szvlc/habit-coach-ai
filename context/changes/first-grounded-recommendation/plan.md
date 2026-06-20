@@ -407,33 +407,33 @@ NFR <10s: wywołanie OpenRouter z twardym `timeout ≈ 9s`; Haiku realnie ~2-4s.
 
 #### Automatyczne
 
-- [x] 2.1 `manage.py check` przechodzi
-- [x] 2.2 Testy logiki zielone: sygnały (streak/%/weak-day) policzone poprawnie
-- [x] 2.3 Test: `build_history_context` zawiera tylko aktywne nawyki usera (izolacja)
-- [x] 2.4 Test: `is_grounded` wykrywa nazwę nawyku, odrzuca generyczny tekst
-- [x] 2.5 Test: `generate_recommendation` woła klienta z `OPENROUTER_MODEL` i zwraca tekst (mock); błąd propaguje wyjątek
-- [x] 2.6 Brak ImportError
+- [x] 2.1 `manage.py check` przechodzi — f92a55b
+- [x] 2.2 Testy logiki zielone: sygnały (streak/%/weak-day) policzone poprawnie — f92a55b
+- [x] 2.3 Test: `build_history_context` zawiera tylko aktywne nawyki usera (izolacja) — f92a55b
+- [x] 2.4 Test: `is_grounded` wykrywa nazwę nawyku, odrzuca generyczny tekst — f92a55b
+- [x] 2.5 Test: `generate_recommendation` woła klienta z `OPENROUTER_MODEL` i zwraca tekst (mock); błąd propaguje wyjątek — f92a55b
+- [x] 2.6 Brak ImportError — f92a55b
 
 #### Ręczne
 
-- [x] 2.7 `shell`: `build_history_context(user)` na seedowanych danych zwraca sensowne sygnały
+- [x] 2.7 `shell`: `build_history_context(user)` na seedowanych danych zwraca sensowne sygnały — f92a55b
 
 ### Faza 3: View + integracja dashboardu (HTMX)
 
 #### Automatyczne
 
-- [ ] 3.1 `manage.py check` przechodzi bez „template does not exist"
-- [ ] 3.2 URL resolver pasuje `/habits/recommendation/generate/`
-- [ ] 3.3 `collectstatic --no-input --dry-run` przechodzi
-- [ ] 3.4 Brak ImportError w accounts/views.py
+- [x] 3.1 `manage.py check` przechodzi bez „template does not exist"
+- [x] 3.2 URL resolver pasuje `/habits/recommendation/generate/`
+- [x] 3.3 `collectstatic --no-input --dry-run` przechodzi
+- [x] 3.4 Brak ImportError w accounts/views.py
 
 #### Ręczne
 
-- [ ] 3.5 Dashboard z danymi: przycisk + spinner → karta z tekstem bez reloadu (HTMX)
-- [ ] 3.6 Dashboard bez danych: empty-state z instrukcją, brak przycisku
-- [ ] 3.7 Odświeżenie → ostatnia rekomendacja widoczna (FR-012)
-- [ ] 3.8 Wymuszony błąd → komunikat, brak nowego wiersza w DB, przycisk zostaje
-- [ ] 3.9 Anon → `/habits/recommendation/generate/` POST → 302 login
+- [x] 3.5 Dashboard z danymi: przycisk + spinner → karta z tekstem bez reloadu (HTMX) — mechanizm swap zweryfikowany przez test client (partial zwracany, hx-target #recommendation-section); realny tekst w prod smoke 4.6
+- [x] 3.6 Dashboard bez danych: empty-state z instrukcją, brak przycisku
+- [x] 3.7 Odświeżenie → ostatnia rekomendacja widoczna (FR-012)
+- [x] 3.8 Wymuszony błąd → komunikat, brak nowego wiersza w DB, przycisk zostaje
+- [x] 3.9 Anon → `/habits/recommendation/generate/` POST → 302 login
 
 ### Faza 4: Testy (mock LLM) + deployment verify
 

@@ -1,0 +1,34 @@
+{% comment %}
+Recommendation section (FR-011/012). Single source of truth: included by the
+dashboard (with latest recommendation) AND returned by RecommendationGenerateView
+for the HTMX swap. The button targets #recommendation-section with outerHTML, so
+the whole section is replaced in place after generating.
+Context: recommendation (Recommendation|None), rec_error (str|None), can_generate (bool).
+{% endcomment %}
+<div id="recommendation-section" class="bg-white rounded-lg shadow-sm p-8 mb-6">
+    <h2 class="text-lg font-bold mb-4">Rekomendacja AI</h2>
+
+    {% if rec_error %}
+        <p class="px-4 py-2 rounded bg-red-50 text-red-700 text-sm mb-4">{{ rec_error }}</p>
+    {% endif %}
+
+    {% if recommendation %}
+        <div class="mb-4">
+            <p class="text-gray-800 whitespace-pre-line">{{ recommendation.text }}</p>
+            <p class="text-xs text-gray-400 mt-2">{{ recommendation.created_at|date:"Y-m-d H:i" }}</p>
+        </div>
+    {% endif %}
+
+    {% if can_generate %}
+        <button hx-post="{% url 'habits:recommend' %}"
+                hx-target="#recommendation-section"
+                hx-swap="outerHTML"
+                hx-indicator="#rec-spinner"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-md transition">
+            {% if recommendation %}Wygeneruj ponownie{% else %}Wygeneruj rekomendację{% endif %}
+        </button>
+        <span id="rec-spinner" class="htmx-indicator text-sm text-gray-500 ml-3">Generuję…</span>
+    {% else %}
+        <p class="text-gray-600 text-sm">Dodaj nawyk i zaloguj wykonanie, aby wygenerować rekomendację.</p>
+    {% endif %}
+</div>

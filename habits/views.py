@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,7 +9,10 @@ from django.views import View
 from django.views.generic import CreateView, TemplateView, UpdateView
 
 from .forms import HabitForm
-from .models import Habit, HabitExecution
+from .models import Habit, HabitExecution, Recommendation
+from .recommendations import can_generate, generate_recommendation, is_grounded
+
+logger = logging.getLogger(__name__)
 
 HISTORY_DAYS = 30
 
@@ -100,3 +104,45 @@ class HabitHistoryView(LoginRequiredMixin, TemplateView):
             for habit in habits
         ]
         return context
+
+
+class RecommendationGenerateView(LoginRequiredMixin, View):
+    """Generate an on-demand AI recommendation (FR-011). Guards on data
+    threshold, calls the OpenRouter service, persists with the observational
+    grounding flag (Q2). On API error: friendly message, no row saved."""
+
+    def post(self, request):
+        if not can_generate(request.user):
+            return self._render(
+                request,
+                error="Dodaj nawyk i zaloguj wykonanie, aby wygenerować rekomendację.",
+            )
+        try:
+            text, model_used = generate_recommendation(request.user)
+        except Exception:
+            logger.exception("OpenRouter recommendation generation failed")
+            return self._render(
+                request,
+                error="Nie udało się wygenerować rekomendacji. Spróbuj ponownie.",
+            )
+        grounded = is_grounded(text, request.user)
+        recommendation = Recommendation.objects.create(
+            user=request.user, text=text, model_used=model_used, grounded=grounded
+        )
+        logger.info(
+            "recommendation generated user=%s model=%s grounded=%s",
+            request.user.pk,
+            model_used,
+            grounded,
+        )
+        return self._render(request, recommendation=recommendation)
+
+    def _render(self, request, recommendation=None, error=None):
+        context = {
+            "recommendation": recommendation,
+            "rec_error": error,
+            "can_generate": can_generate(request.user),
+        }
+        if request.headers.get("HX-Request"):
+            return render(request, "habits/_recommendation.html", context)
+        return redirect("accounts:dashboard")

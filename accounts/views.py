@@ -4,7 +4,8 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, TemplateView
 
-from habits.models import Habit, HabitExecution
+from habits.models import Habit, HabitExecution, Recommendation
+from habits.recommendations import can_generate
 
 from .forms import CustomUserCreationForm
 
@@ -32,4 +33,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         for habit in habits:
             habit.done_today = habit.pk in done_ids
         context["habits"] = habits
+        context["recommendation"] = Recommendation.objects.latest_for(self.request.user)
+        context["can_generate"] = can_generate(self.request.user)
         return context

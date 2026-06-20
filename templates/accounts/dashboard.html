@@ -3,6 +3,7 @@
 {% block title %}Twoje nawyki · HabitCoach AI{% endblock %}
 
 {% block content %}
+{% include "habits/_recommendation.html" %}
 <div class="bg-white rounded-lg shadow-sm p-8">
     <h1 class="text-2xl font-bold mb-6">Witaj, {{ user.email }}</h1>
 

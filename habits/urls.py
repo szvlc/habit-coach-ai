@@ -10,4 +10,5 @@ urlpatterns = [
     path("<int:pk>/archive/", views.HabitArchiveView.as_view(), name="archive"),
     path("<int:pk>/toggle/", views.HabitToggleView.as_view(), name="toggle"),
     path("history/", views.HabitHistoryView.as_view(), name="history"),
+    path("recommendation/generate/", views.RecommendationGenerateView.as_view(), name="recommend"),
 ]

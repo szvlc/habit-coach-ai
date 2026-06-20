@@ -136,6 +136,15 @@ def generate_recommendation(user):
     return text, settings.OPENROUTER_MODEL
 
 
+def can_generate(user):
+    """Data threshold for FR-011: at least one active habit and one logged
+    execution — without history there is nothing concrete to ground on."""
+    return (
+        Habit.objects.active(user).exists()
+        and HabitExecution.objects.filter(habit__user=user).exists()
+    )
+
+
 def is_grounded(text, user):
     """Observational Q2 token-check: does the text reference concrete user data?
 
