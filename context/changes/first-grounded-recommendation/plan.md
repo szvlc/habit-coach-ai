@@ -392,16 +392,16 @@ NFR <10s: wywołanie OpenRouter z twardym `timeout ≈ 9s`; Haiku realnie ~2-4s.
 
 #### Automatyczne
 
-- [ ] 1.1 `manage.py check` przechodzi bez warnings (bez klucza w env)
-- [ ] 1.2 `manage.py makemigrations --check habits` zwraca „No changes detected" po wygenerowaniu
-- [ ] 1.3 `manage.py migrate` przechodzi
-- [ ] 1.4 Tabela `habits_recommendation` istnieje w db.sqlite3
-- [ ] 1.5 `import openai` działa
+- [x] 1.1 `manage.py check` przechodzi bez warnings (bez klucza w env)
+- [x] 1.2 `manage.py makemigrations --check habits` zwraca „No changes detected" po wygenerowaniu
+- [x] 1.3 `manage.py migrate` przechodzi
+- [x] 1.4 Tabela `habits_recommendation` istnieje w db.sqlite3
+- [x] 1.5 `import openai` działa
 
 #### Ręczne
 
-- [ ] 1.6 `/admin/` — sekcja „Recommendations" z list_display + filtrem po `grounded`
-- [ ] 1.7 `settings.OPENROUTER_MODEL` zwraca `anthropic/claude-haiku-4-5`
+- [x] 1.6 `/admin/` — sekcja „Recommendations" z list_display + filtrem po `grounded`
+- [x] 1.7 `settings.OPENROUTER_MODEL` zwraca `anthropic/claude-haiku-4-5`
 
 ### Faza 2: Prompt assembly + sygnały + LLM service + token-check
 

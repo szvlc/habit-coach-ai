@@ -159,3 +159,12 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# OpenRouter (AI recommendations, FR-011). Key may be empty locally — tests mock
+# the LLM call; production supplies OPENROUTER_API_KEY via Render env. Never use
+# os.environ[...] here, or check/tests without the key would fail at import.
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
+OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "anthropic/claude-haiku-4-5")
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+OPENROUTER_TIMEOUT = float(os.environ.get("OPENROUTER_TIMEOUT", "9"))

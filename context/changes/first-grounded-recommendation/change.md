@@ -1,7 +1,7 @@
 ---
 change_id: first-grounded-recommendation
 title: First grounded recommendation
-status: planned
+status: implementing
 created: 2026-06-20
 updated: 2026-06-20
 archived_at: null

@@ -66,3 +66,28 @@ class HabitExecution(models.Model):
 
     def __str__(self):
         return f"{self.habit.name} @ {self.date}"
+
+
+class RecommendationManager(models.Manager):
+    def latest_for(self, user):
+        return self.filter(user=user).order_by("-created_at").first()
+
+
+class Recommendation(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="recommendations",
+    )
+    text = models.TextField()
+    model_used = models.CharField(max_length=100)
+    grounded = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = RecommendationManager()
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Rec for {self.user} @ {self.created_at:%Y-%m-%d}"
