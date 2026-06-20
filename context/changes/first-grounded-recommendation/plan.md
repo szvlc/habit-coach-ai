@@ -392,31 +392,31 @@ NFR <10s: wywołanie OpenRouter z twardym `timeout ≈ 9s`; Haiku realnie ~2-4s.
 
 #### Automatyczne
 
-- [x] 1.1 `manage.py check` przechodzi bez warnings (bez klucza w env)
-- [x] 1.2 `manage.py makemigrations --check habits` zwraca „No changes detected" po wygenerowaniu
-- [x] 1.3 `manage.py migrate` przechodzi
-- [x] 1.4 Tabela `habits_recommendation` istnieje w db.sqlite3
-- [x] 1.5 `import openai` działa
+- [x] 1.1 `manage.py check` przechodzi bez warnings (bez klucza w env) — 985f63d
+- [x] 1.2 `manage.py makemigrations --check habits` zwraca „No changes detected" po wygenerowaniu — 985f63d
+- [x] 1.3 `manage.py migrate` przechodzi — 985f63d
+- [x] 1.4 Tabela `habits_recommendation` istnieje w db.sqlite3 — 985f63d
+- [x] 1.5 `import openai` działa — 985f63d
 
 #### Ręczne
 
-- [x] 1.6 `/admin/` — sekcja „Recommendations" z list_display + filtrem po `grounded`
-- [x] 1.7 `settings.OPENROUTER_MODEL` zwraca `anthropic/claude-haiku-4-5`
+- [x] 1.6 `/admin/` — sekcja „Recommendations" z list_display + filtrem po `grounded` — 985f63d
+- [x] 1.7 `settings.OPENROUTER_MODEL` zwraca `anthropic/claude-haiku-4-5` — 985f63d
 
 ### Faza 2: Prompt assembly + sygnały + LLM service + token-check
 
 #### Automatyczne
 
-- [ ] 2.1 `manage.py check` przechodzi
-- [ ] 2.2 Testy logiki zielone: sygnały (streak/%/weak-day) policzone poprawnie
-- [ ] 2.3 Test: `build_history_context` zawiera tylko aktywne nawyki usera (izolacja)
-- [ ] 2.4 Test: `is_grounded` wykrywa nazwę nawyku, odrzuca generyczny tekst
-- [ ] 2.5 Test: `generate_recommendation` woła klienta z `OPENROUTER_MODEL` i zwraca tekst (mock); błąd propaguje wyjątek
-- [ ] 2.6 Brak ImportError
+- [x] 2.1 `manage.py check` przechodzi
+- [x] 2.2 Testy logiki zielone: sygnały (streak/%/weak-day) policzone poprawnie
+- [x] 2.3 Test: `build_history_context` zawiera tylko aktywne nawyki usera (izolacja)
+- [x] 2.4 Test: `is_grounded` wykrywa nazwę nawyku, odrzuca generyczny tekst
+- [x] 2.5 Test: `generate_recommendation` woła klienta z `OPENROUTER_MODEL` i zwraca tekst (mock); błąd propaguje wyjątek
+- [x] 2.6 Brak ImportError
 
 #### Ręczne
 
-- [ ] 2.7 `shell`: `build_history_context(user)` na seedowanych danych zwraca sensowne sygnały
+- [x] 2.7 `shell`: `build_history_context(user)` na seedowanych danych zwraca sensowne sygnały
 
 ### Faza 3: View + integracja dashboardu (HTMX)
 
