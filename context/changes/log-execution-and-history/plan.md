@@ -452,17 +452,19 @@ NFR <200ms na toggle: endpoint robi 1 lookup nawyku (isolation) + 1 zapytanie o 
 
 #### Automatyczne
 
-- [x] 4.1 `manage.py test habits` — wszystkie zielone (28: 13 S-02 + 15 nowych)
-- [x] 4.2 `manage.py test accounts` — zielone (9: 8 + 1 nowy)
-- [x] 4.3 `manage.py test` (całość) — green (37)
-- [x] 4.4 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021)
-- [ ] 4.5 Render deploy log: `Applying habits.0002... OK` + service `live`
+- [x] 4.1 `manage.py test habits` — wszystkie zielone (28: 13 S-02 + 15 nowych) — b3d1716
+- [x] 4.2 `manage.py test accounts` — zielone (9: 8 + 1 nowy) — b3d1716
+- [x] 4.3 `manage.py test` (całość) — green (37) — b3d1716
+- [x] 4.4 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021) — b3d1716
+- [x] 4.5 Service live (trasa `/habits/history/` przeszła 404→302 o 13:17:26); migracja `habits.0002` potwierdzona funkcjonalnie — toggle na prod tworzy wiersz `habits_habitexecution` (dashboard pokazuje „Zrobione dziś"). Log Render nie odczytany wprost — b3d1716
 
 #### Ręczne
 
-- [ ] 4.6 Production: toggle „wykonane dziś" działa (HTMX, bez reloadu)
-- [ ] 4.7 Production: undo działa; stan utrzymany po odświeżeniu
-- [ ] 4.8 Production: `/habits/history/` pokazuje siatkę z dzisiejszym wpisem
-- [ ] 4.9 Production: `/habits/<cudzy_id>/toggle/` → 404
-- [ ] 4.10 Supabase Tables → `habits_habitexecution` ma wpis z poprawną datą
-- [ ] 4.11 Render Logs — brak 5xx po smoke
+- [x] 4.6 Production: toggle „wykonane dziś" → 302, dashboard pokazuje „Zrobione dziś" (curl smoke) — b3d1716
+- [x] 4.7 Production: undo → wraca do „Oznacz wykonane"; stan z DB odzwierciedlony na dashboardzie — b3d1716
+- [x] 4.8 Production: `/habits/history/` pokazuje siatkę („Historia (30 dni)") z nawykiem — b3d1716
+- [x] 4.9 Production: user B → `/habits/<id_A>/toggle/` → 404 (z ważnym CSRF) — b3d1716
+- [x] 4.10 `habits_habitexecution` ma wpis — potwierdzone funkcjonalnie (toggle zapisał+odczytał wiersz przez curl); Supabase UI nie otwierany — b3d1716
+- [x] 4.11 Brak 5xx zaobserwowanych w smoke (200/302/404); Render Logs nie tailowane wprost — b3d1716
+
+> Uwaga: prod-smoke utworzył jednorazowe konta testowe (`s3a+*`, `s3b+*`, `s3b2+*@example.com`) i nawyki/wykonania w Supabase. Do posprzątania przy okazji (jak po S-02).
