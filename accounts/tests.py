@@ -3,7 +3,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
-from habits.models import Habit, HabitExecution
+from habits.models import Habit, HabitExecution, Recommendation
 
 User = get_user_model()
 
@@ -106,3 +106,17 @@ class DashboardViewTests(TestCase):
         flags = {h.name: h.done_today for h in response.context["habits"]}
         self.assertTrue(flags["Zrobiony"])
         self.assertFalse(flags["Niezrobiony"])
+
+    def test_dashboard_shows_latest_recommendation_and_can_generate_flag(self):
+        user = User.objects.create_user(email="rec@example.com", password=STRONG_PASSWORD)
+        other = User.objects.create_user(email="other@example.com", password=STRONG_PASSWORD)
+        habit = Habit.objects.create(user=user, name="Czytanie")
+        HabitExecution.objects.create(habit=habit, date=timezone.localdate())
+        Recommendation.objects.create(user=user, text="moja rekomendacja", model_used="m", grounded=True)
+        Recommendation.objects.create(user=other, text="cudza rekomendacja", model_used="m", grounded=True)
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("accounts:dashboard"))
+
+        self.assertEqual(response.context["recommendation"].text, "moja rekomendacja")
+        self.assertTrue(response.context["can_generate"])

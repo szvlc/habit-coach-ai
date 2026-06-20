@@ -422,27 +422,27 @@ NFR <10s: wywołanie OpenRouter z twardym `timeout ≈ 9s`; Haiku realnie ~2-4s.
 
 #### Automatyczne
 
-- [x] 3.1 `manage.py check` przechodzi bez „template does not exist"
-- [x] 3.2 URL resolver pasuje `/habits/recommendation/generate/`
-- [x] 3.3 `collectstatic --no-input --dry-run` przechodzi
-- [x] 3.4 Brak ImportError w accounts/views.py
+- [x] 3.1 `manage.py check` przechodzi bez „template does not exist" — 5ad2ed8
+- [x] 3.2 URL resolver pasuje `/habits/recommendation/generate/` — 5ad2ed8
+- [x] 3.3 `collectstatic --no-input --dry-run` przechodzi — 5ad2ed8
+- [x] 3.4 Brak ImportError w accounts/views.py — 5ad2ed8
 
 #### Ręczne
 
-- [x] 3.5 Dashboard z danymi: przycisk + spinner → karta z tekstem bez reloadu (HTMX) — mechanizm swap zweryfikowany przez test client (partial zwracany, hx-target #recommendation-section); realny tekst w prod smoke 4.6
-- [x] 3.6 Dashboard bez danych: empty-state z instrukcją, brak przycisku
-- [x] 3.7 Odświeżenie → ostatnia rekomendacja widoczna (FR-012)
-- [x] 3.8 Wymuszony błąd → komunikat, brak nowego wiersza w DB, przycisk zostaje
-- [x] 3.9 Anon → `/habits/recommendation/generate/` POST → 302 login
+- [x] 3.5 Dashboard z danymi: przycisk + spinner → karta z tekstem bez reloadu (HTMX) — mechanizm swap zweryfikowany przez test client (partial zwracany, hx-target #recommendation-section); realny tekst w prod smoke 4.6 — 5ad2ed8
+- [x] 3.6 Dashboard bez danych: empty-state z instrukcją, brak przycisku — 5ad2ed8
+- [x] 3.7 Odświeżenie → ostatnia rekomendacja widoczna (FR-012) — 5ad2ed8
+- [x] 3.8 Wymuszony błąd → komunikat, brak nowego wiersza w DB, przycisk zostaje — 5ad2ed8
+- [x] 3.9 Anon → `/habits/recommendation/generate/` POST → 302 login — 5ad2ed8
 
 ### Faza 4: Testy (mock LLM) + deployment verify
 
 #### Automatyczne
 
-- [ ] 4.1 `manage.py test habits` — zielone (~16 nowych + S-02/S-03), zero realnych wywołań sieci
-- [ ] 4.2 `manage.py test accounts` — zielone (poprzednie + 1 nowy)
-- [ ] 4.3 `manage.py test` (całość) — green
-- [ ] 4.4 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021)
+- [x] 4.1 `manage.py test habits` — zielone (40: + 13 nowych S-04), zero realnych wywołań sieci
+- [x] 4.2 `manage.py test accounts` — zielone (10: + 1 nowy)
+- [x] 4.3 `manage.py test` (całość) — green (50)
+- [x] 4.4 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021)
 - [ ] 4.5 Render deploy log: `Applying habits.0003... OK` + service `live`
 
 #### Ręczne

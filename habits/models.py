@@ -70,7 +70,9 @@ class HabitExecution(models.Model):
 
 class RecommendationManager(models.Manager):
     def latest_for(self, user):
-        return self.filter(user=user).order_by("-created_at").first()
+        # -pk tiebreaks rows sharing a created_at timestamp (higher pk = newer),
+        # so "latest" is deterministic even for same-instant rows.
+        return self.filter(user=user).order_by("-created_at", "-pk").first()
 
 
 class Recommendation(models.Model):

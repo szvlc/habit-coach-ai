@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
@@ -6,7 +7,8 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
-from .models import Habit, HabitExecution
+from . import recommendations
+from .models import Habit, HabitExecution, Recommendation
 
 User = get_user_model()
 
@@ -276,3 +278,138 @@ class HabitHistoryViewTests(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse("login"), response.url)
+
+
+@override_settings(SECURE_SSL_REDIRECT=False)
+class RecommendationContextTests(TestCase):
+    def test_context_signals_and_active_only(self):
+        user = User.objects.create_user(email="owner@example.com", password=STRONG_PASSWORD)
+        today = timezone.localdate()
+        habit = Habit.objects.create(user=user, name="Czytanie")
+        Habit.objects.create(user=user, name="Zarchiwizowany", archived=True)
+        for off in (0, 1, 2):  # streak of 3 up to today
+            HabitExecution.objects.create(habit=habit, date=today - timedelta(days=off))
+
+        ctx = recommendations.build_history_context(user)
+
+        self.assertEqual(len(ctx["days"]), recommendations.HISTORY_DAYS)
+        names = [h["name"] for h in ctx["habits"]]
+        self.assertEqual(names, ["Czytanie"])  # archived excluded
+        row = ctx["habits"][0]
+        self.assertEqual(row["current_streak"], 3)
+        self.assertEqual(row["done_count"], 3)
+
+    def test_context_isolation_excludes_other_users(self):
+        a = User.objects.create_user(email="a@example.com", password=STRONG_PASSWORD)
+        b = User.objects.create_user(email="b@example.com", password=STRONG_PASSWORD)
+        Habit.objects.create(user=a, name="NawykA")
+        Habit.objects.create(user=b, name="NawykB")
+
+        ctx = recommendations.build_history_context(a)
+
+        names = [h["name"] for h in ctx["habits"]]
+        self.assertEqual(names, ["NawykA"])
+        self.assertNotIn("NawykB", names)
+
+    def test_context_weakest_weekday_none_when_fully_complete(self):
+        user = User.objects.create_user(email="owner@example.com", password=STRONG_PASSWORD)
+        today = timezone.localdate()
+        habit = Habit.objects.create(user=user, name="Codzienny")
+        for off in range(recommendations.HISTORY_DAYS):
+            HabitExecution.objects.create(habit=habit, date=today - timedelta(days=off))
+
+        row = recommendations.build_history_context(user)["habits"][0]
+
+        self.assertEqual(row["completion_rate"], 100)
+        self.assertIsNone(row["weakest_weekday"])
+
+
+@override_settings(SECURE_SSL_REDIRECT=False)
+class IsGroundedTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email="owner@example.com", password=STRONG_PASSWORD)
+        Habit.objects.create(user=self.user, name="Czytanie")
+
+    def test_grounded_true_when_habit_name_present(self):
+        self.assertTrue(recommendations.is_grounded("Twój nawyk Czytanie idzie świetnie", self.user))
+
+    def test_grounded_false_for_generic_text(self):
+        self.assertFalse(recommendations.is_grounded("Pij więcej wody i śpij 8 godzin", self.user))
+
+
+@override_settings(SECURE_SSL_REDIRECT=False)
+class RecommendationGenerateViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email="owner@example.com", password=STRONG_PASSWORD)
+        self.url = reverse("habits:recommend")
+        self.client.force_login(self.user)
+
+    def _seed_data(self):
+        habit = Habit.objects.create(user=self.user, name="Czytanie")
+        HabitExecution.objects.create(habit=habit, date=timezone.localdate())
+        return habit
+
+    def test_generate_creates_recommendation_and_shows_text(self):
+        self._seed_data()
+        with patch(
+            "habits.views.generate_recommendation",
+            return_value=("Twoje Czytanie ma dobry streak.", "anthropic/claude-haiku-4-5"),
+        ):
+            response = self.client.post(self.url, HTTP_HX_REQUEST="true")
+        self.assertEqual(response.status_code, 200)
+        rec = Recommendation.objects.get(user=self.user)
+        self.assertEqual(rec.model_used, "anthropic/claude-haiku-4-5")
+        self.assertContains(response, "Czytanie")
+
+    def test_generated_recommendation_grounded_flag_set(self):
+        self._seed_data()
+        with patch(
+            "habits.views.generate_recommendation",
+            return_value=("Czytanie idzie świetnie!", "anthropic/claude-haiku-4-5"),
+        ):
+            self.client.post(self.url, HTTP_HX_REQUEST="true")
+        self.assertTrue(Recommendation.objects.get(user=self.user).grounded)
+
+    def test_generate_blocked_without_data(self):
+        with patch("habits.views.generate_recommendation") as gen:
+            response = self.client.post(self.url, HTTP_HX_REQUEST="true")
+        self.assertFalse(gen.called)
+        self.assertEqual(Recommendation.objects.filter(user=self.user).count(), 0)
+        self.assertContains(response, "Dodaj nawyk")
+
+    def test_generate_api_error_shows_message_no_save(self):
+        self._seed_data()
+        with patch("habits.views.generate_recommendation", side_effect=RuntimeError("boom")):
+            response = self.client.post(self.url, HTTP_HX_REQUEST="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Recommendation.objects.filter(user=self.user).count(), 0)
+        self.assertContains(response, "Nie udało się")
+
+    def test_generate_uses_only_request_user_data(self):
+        self._seed_data()
+        with patch(
+            "habits.views.generate_recommendation",
+            return_value=("ok", "m"),
+        ) as gen:
+            self.client.post(self.url, HTTP_HX_REQUEST="true")
+        self.assertEqual(gen.call_args.args[0], self.user)
+
+    def test_generate_requires_login(self):
+        self.client.logout()
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("login"), response.url)
+
+
+@override_settings(SECURE_SSL_REDIRECT=False)
+class RecommendationModelTests(TestCase):
+    def test_latest_for_returns_users_most_recent_not_others(self):
+        a = User.objects.create_user(email="a@example.com", password=STRONG_PASSWORD)
+        b = User.objects.create_user(email="b@example.com", password=STRONG_PASSWORD)
+        Recommendation.objects.create(user=a, text="stara", model_used="m", grounded=True)
+        newest = Recommendation.objects.create(user=a, text="nowa", model_used="m", grounded=True)
+        Recommendation.objects.create(user=b, text="cudza", model_used="m", grounded=True)
+
+        result = Recommendation.objects.latest_for(a)
+
+        self.assertEqual(result, newest)
