@@ -413,3 +413,28 @@ class RecommendationModelTests(TestCase):
         result = Recommendation.objects.latest_for(a)
 
         self.assertEqual(result, newest)
+
+
+@override_settings(SECURE_SSL_REDIRECT=False)
+class RecommendationServiceTests(TestCase):
+    def test_generate_passes_model_max_tokens_and_timeout(self):
+        from unittest.mock import MagicMock
+
+        user = User.objects.create_user(email="owner@example.com", password=STRONG_PASSWORD)
+        habit = Habit.objects.create(user=user, name="Czytanie")
+        HabitExecution.objects.create(habit=habit, date=timezone.localdate())
+
+        with patch("habits.recommendations.OpenAI") as MockOpenAI:
+            client = MockOpenAI.return_value
+            msg = MagicMock()
+            msg.content = "Czytanie idzie świetnie."
+            client.chat.completions.create.return_value = MagicMock(
+                choices=[MagicMock(message=msg)]
+            )
+            text, model = recommendations.generate_recommendation(user)
+
+        kwargs = client.chat.completions.create.call_args.kwargs
+        self.assertEqual(kwargs["model"], "anthropic/claude-haiku-4.5")
+        self.assertEqual(kwargs["max_tokens"], 500)
+        self.assertEqual(kwargs["timeout"], 9.0)
+        self.assertEqual(text, "Czytanie idzie świetnie.")

@@ -130,6 +130,7 @@ def generate_recommendation(user):
     completion = client.chat.completions.create(
         model=settings.OPENROUTER_MODEL,
         messages=messages,
+        max_tokens=settings.OPENROUTER_MAX_TOKENS,
         timeout=settings.OPENROUTER_TIMEOUT,
     )
     text = (completion.choices[0].message.content or "").strip()

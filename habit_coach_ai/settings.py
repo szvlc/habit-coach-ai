@@ -169,3 +169,7 @@ OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "anthropic/claude-haiku-4.5")
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_TIMEOUT = float(os.environ.get("OPENROUTER_TIMEOUT", "9"))
+# Cap completion length: a recommendation is 2-4 sentences. Also keeps each
+# request affordable — OpenRouter bills against max_tokens, and an uncapped
+# request (model default ~64k) gets a 402 on a low/free balance.
+OPENROUTER_MAX_TOKENS = int(os.environ.get("OPENROUTER_MAX_TOKENS", "500"))
