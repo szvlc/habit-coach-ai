@@ -34,3 +34,10 @@
 - **Problem**: `ModelForm.validate_unique()` wyklucza pola spoza formularza, więc `UniqueConstraint` obejmujący takie pole (np. `(user, name)`) jest cicho pomijany — duplikat przechodzi walidację i leci do DB → `IntegrityError` 500 zamiast przyjaznego błędu pola. Zdarzyło się w manage-habits S-02 (`HabitForm`).
 - **Rule**: Gdy `UniqueConstraint` obejmuje pole ustawiane poza formularzem, nie polegaj na `ModelForm.validate_unique` — przekaż to pole do formularza i sprawdź duplikat jawnie w `clean_<field>` (wykluczając `self.instance.pk` przy edycji), a `UniqueConstraint` w modelu zostaw jako backstop integralności.
 - **Applies to**: plan, implement, impl-review
+
+## Integracja zewnętrznego LLM: prod-smoke realnym wywołaniem (mock nie złapie slug/limitów/auth)
+
+- **Context**: Każda faza integrująca zewnętrzny LLM/API gateway (OpenRouter/OpenAI itp.), gdzie testy jednostkowe mockują wywołanie sieciowe.
+- **Problem**: W S-04 testy z mockiem LLM przeszły, ale prod padł dwukrotnie: nieprawidłowy slug modelu (`claude-haiku-4-5` vs `-4.5` → 404) i brak `max_tokens` (default ~64k → 402 przy małym saldzie). Mock nie waliduje sluga/limitów/auth realnego gateway.
+- **Rule**: Przy integracji zewnętrznego LLM zrób prod-smoke z JEDNYM realnym wywołaniem przed sign-off (mock nie sprawdzi sluga/limitów/auth); zawsze ustaw jawny `max_tokens`; zweryfikuj dokładny slug modelu względem żywej listy modeli dostawcy.
+- **Applies to**: plan, implement, impl-review
