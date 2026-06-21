@@ -1,10 +1,10 @@
 ---
 change_id: password-reset-via-email
 title: Password reset via email
-status: implemented
+status: archived
 created: 2026-06-21
 updated: 2026-06-21
-archived_at: null
+archived_at: 2026-06-21T15:18:32Z
 ---
 
 ## Notes

@@ -36,7 +36,7 @@ Sekwencja jest sortowana pod kątem `market-feedback`: szybkie wystawienie ście
 | S-02  | `manage-habits`                        | dodać, edytować nazwę i zarchiwizować nawyk                                | S-01              | US-01, FR-005, FR-006, FR-007  | done     |
 | S-03  | `log-execution-and-history`            | jednym kliknięciem zalogować wykonanie i zobaczyć 30 dni historii          | S-02              | US-01, FR-008, FR-009, FR-010  | done     |
 | S-04  | `first-grounded-recommendation`        | wygenerować rekomendację AI cytującą jego rzeczywistą historię             | S-03              | US-01, FR-011, FR-012          | done     |
-| S-05  | `password-reset-via-email`             | zresetować zapomniane hasło przez link na email                            | S-01              | FR-003                         | blocked  |
+| S-05  | `password-reset-via-email`             | zresetować zapomniane hasło przez link na email                            | S-01              | FR-003                         | done     |
 | S-06  | `auto-recommendation-at-threshold`     | zobaczyć proaktywną rekomendację AI po przekroczeniu progu danych          | S-04              | FR-013                         | blocked  |
 | S-07  | `logout`                               | wylogować się jawnie (poza wygaśnięciem sesji)                             | S-01              | FR-004                         | proposed |
 
@@ -138,7 +138,7 @@ Co już jest na miejscu w bazie kodu na 2026-05-30 (automatycznie zbadane + potw
 - **Niewiadome:**
   - Który email provider używamy? Pragmatyczne kandydaty: (a) Gmail SMTP z app password (najszybsze, ale rate-limited i nieprofesjonalne na produkcji), (b) Postmark / Resend (free tier do 100 emaili/dzień, transactional email focus, ~5 min konfiguracji), (c) Mailgun / SendGrid (większy free tier, więcej setup'u). Owner: user. Blokuje: **tak** — bez wybranego providera nie ma jak wysłać emaila i FR-003 jest hard-blocked.
 - **Ryzyko:** Django built-in `PasswordResetView` + `EMAIL_BACKEND` w settings.py to mała ilość kodu, ale email deliverability może być problemem (SPF/DKIM, spam folders). Dla MVP pragmatyczny default to Resend (3000 free emails/mc, prostszy setup niż Mailgun).
-- **Status:** blocked (Q4 z Block: tak)
+- **Status:** done
 
 ### S-06: Automatyczna rekomendacja po przekroczeniu progu
 
@@ -208,3 +208,4 @@ Co już jest na miejscu w bazie kodu na 2026-05-30 (automatycznie zbadane + potw
 - **S-02: Zarządzanie nawykami (dodawanie, edycja, archiwizacja)** — Zarchiwizowano 2026-06-13 → `context/archive/2026-06-07-manage-habits/`. Lekcja: egzekwuj wielopolowy UniqueConstraint jawnie w formularzu, nie przez validate_unique (`context/foundation/lessons.md`).
 - **S-03: Logowanie wykonania + widok historii 30 dni** — Zarchiwizowano 2026-06-20 → `context/archive/2026-06-13-log-execution-and-history/`. Lekcja: —.
 - **S-04: Pierwsza ugruntowana rekomendacja AI (gwiazda przewodnia)** — Zarchiwizowano 2026-06-21 → `context/archive/2026-06-20-first-grounded-recommendation/`. Lekcja: —.
+- **S-05: Reset hasła przez email** — Zarchiwizowano 2026-06-21 → `context/archive/2026-06-21-password-reset-via-email/`. Lekcja: —.
