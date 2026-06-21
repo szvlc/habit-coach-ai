@@ -3,7 +3,7 @@ project: HabitCoach AI
 version: 1
 status: draft
 created: 2026-05-30
-updated: 2026-06-20
+updated: 2026-06-21
 prd_version: 1
 main_goal: market-feedback
 top_blocker: decisions
@@ -35,7 +35,7 @@ Sekwencja jest sortowana pod kątem `market-feedback`: szybkie wystawienie ście
 | S-01  | `register-and-login`                   | zarejestrować konto i zalogować się email+hasło z długą sesją              | F-01              | US-01, FR-001, FR-002          | done     |
 | S-02  | `manage-habits`                        | dodać, edytować nazwę i zarchiwizować nawyk                                | S-01              | US-01, FR-005, FR-006, FR-007  | done     |
 | S-03  | `log-execution-and-history`            | jednym kliknięciem zalogować wykonanie i zobaczyć 30 dni historii          | S-02              | US-01, FR-008, FR-009, FR-010  | done     |
-| S-04  | `first-grounded-recommendation`        | wygenerować rekomendację AI cytującą jego rzeczywistą historię             | S-03              | US-01, FR-011, FR-012          | proposed |
+| S-04  | `first-grounded-recommendation`        | wygenerować rekomendację AI cytującą jego rzeczywistą historię             | S-03              | US-01, FR-011, FR-012          | done     |
 | S-05  | `password-reset-via-email`             | zresetować zapomniane hasło przez link na email                            | S-01              | FR-003                         | blocked  |
 | S-06  | `auto-recommendation-at-threshold`     | zobaczyć proaktywną rekomendację AI po przekroczeniu progu danych          | S-04              | FR-013                         | blocked  |
 | S-07  | `logout`                               | wylogować się jawnie (poza wygaśnięciem sesji)                             | S-01              | FR-004                         | proposed |
@@ -125,7 +125,7 @@ Co już jest na miejscu w bazie kodu na 2026-05-30 (automatycznie zbadane + potw
   - Wybór konkretnego modelu OpenRouter dla pierwszej rekomendacji (kandydaci z `infrastructure.md`: `anthropic/claude-haiku-4-5` lub `openai/gpt-4o-mini`). Owner: user. Blokuje: nie (pragmatyczny default w slice'ie, refine po pierwszych próbkach).
   - Kształt promptu zapewniający że ≥ 75% rekomendacji cytuje konkretne dane — pierwszy prompt zawiera nazwy nawyków + tabelę 30-dniowej historii i instrukcję „odnoś się do tych konkretnych nazw i wzorców". Iteracja w S-06 lub osobno. Owner: user. Blokuje: nie.
 - **Ryzyko:** Główne miejsce gdzie hipoteza produktu się broni lub upada. Pierwsza wersja promptu z explicit grounding będzie prawdopodobnie wystarczająca dla MVP signal, ale samo prompt engineering to obszar wymagający iteracji. Latencja 10s NFR — OpenRouter z Haiku/gpt-4o-mini zmieści się w budżecie, ale streaming/intermediate UI dla NFR „progres co 2s" wymaga rozważenia (HTMX SSE lub server-sent events). Per-user isolation: zapytanie do OpenRouter MUSI zawierać tylko dane bieżącego `request.user`.
-- **Status:** proposed
+- **Status:** done
 
 ### S-05: Reset hasła przez email
 
@@ -207,3 +207,4 @@ Co już jest na miejscu w bazie kodu na 2026-05-30 (automatycznie zbadane + potw
 - **S-01: Rejestracja i logowanie email+hasło** — Zarchiwizowano 2026-06-04 → `context/archive/2026-06-04-register-and-login/`. Retro 2026-06-07 → `context/archive/2026-06-07-register-and-login-retro/`. Lekcja: success-criteria sign-off must actually read the command output (`context/foundation/lessons.md`).
 - **S-02: Zarządzanie nawykami (dodawanie, edycja, archiwizacja)** — Zarchiwizowano 2026-06-13 → `context/archive/2026-06-07-manage-habits/`. Lekcja: egzekwuj wielopolowy UniqueConstraint jawnie w formularzu, nie przez validate_unique (`context/foundation/lessons.md`).
 - **S-03: Logowanie wykonania + widok historii 30 dni** — Zarchiwizowano 2026-06-20 → `context/archive/2026-06-13-log-execution-and-history/`. Lekcja: —.
+- **S-04: Pierwsza ugruntowana rekomendacja AI (gwiazda przewodnia)** — Zarchiwizowano 2026-06-21 → `context/archive/2026-06-20-first-grounded-recommendation/`. Lekcja: —.
