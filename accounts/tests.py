@@ -1,4 +1,7 @@
+import re
+
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -8,6 +11,7 @@ from habits.models import Habit, HabitExecution, Recommendation
 User = get_user_model()
 
 STRONG_PASSWORD = "ZQ4!yt8mxL2p"
+NEW_PASSWORD = "Nowe!Haslo987"
 
 
 @override_settings(SECURE_SSL_REDIRECT=False)
@@ -120,3 +124,60 @@ class DashboardViewTests(TestCase):
 
         self.assertEqual(response.context["recommendation"].text, "moja rekomendacja")
         self.assertTrue(response.context["can_generate"])
+
+
+@override_settings(
+    SECURE_SSL_REDIRECT=False,
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+)
+class PasswordResetFlowTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email="reset@example.com", password=STRONG_PASSWORD)
+
+    def _confirm_path_from_email(self):
+        return re.search(r"(/accounts/reset/[\w.-]+/[\w.-]+/)", mail.outbox[0].body).group(1)
+
+    def test_reset_request_sends_email_with_link(self):
+        response = self.client.post(reverse("password_reset"), {"email": "reset@example.com"})
+        self.assertRedirects(response, reverse("password_reset_done"))
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertRegex(mail.outbox[0].body, r"/accounts/reset/[\w.-]+/[\w.-]+/")
+
+    def test_full_reset_flow_sets_new_password_and_logs_in(self):
+        self.client.post(reverse("password_reset"), {"email": "reset@example.com"})
+        confirm_path = self._confirm_path_from_email()
+        set_password_url = self.client.get(confirm_path).url  # redirect to .../set-password/
+        response = self.client.post(
+            set_password_url,
+            {"new_password1": NEW_PASSWORD, "new_password2": NEW_PASSWORD},
+        )
+        self.assertRedirects(response, reverse("password_reset_complete"))
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password(NEW_PASSWORD))
+        self.assertFalse(self.user.check_password(STRONG_PASSWORD))
+        self.assertTrue(self.client.login(email="reset@example.com", password=NEW_PASSWORD))
+
+    def test_reset_unknown_email_does_not_reveal_and_sends_nothing(self):
+        response = self.client.post(reverse("password_reset"), {"email": "nobody@example.com"})
+        self.assertRedirects(response, reverse("password_reset_done"))
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_used_token_link_is_invalid_second_time(self):
+        self.client.post(reverse("password_reset"), {"email": "reset@example.com"})
+        confirm_path = self._confirm_path_from_email()
+        set_password_url = self.client.get(confirm_path).url
+        self.client.post(
+            set_password_url,
+            {"new_password1": NEW_PASSWORD, "new_password2": NEW_PASSWORD},
+        )
+        # Token is tied to the old password hash; the original link no longer validates.
+        response = self.client.get(confirm_path)
+        self.assertContains(response, "Link nieprawidłowy")
+
+    def test_invalid_token_shows_invalid_link(self):
+        response = self.client.get("/accounts/reset/MjQ/invalid-token/")
+        self.assertContains(response, "Link nieprawidłowy")
+
+    def test_login_page_has_reset_link(self):
+        response = self.client.get(reverse("login"))
+        self.assertContains(response, reverse("password_reset"))

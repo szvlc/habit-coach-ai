@@ -241,26 +241,26 @@ Brak migracji — żaden model nie zmieniony. Zmiana czysto konfiguracyjna + sza
 
 #### Automatyczne
 
-- [x] 1.1 `manage.py check` przechodzi bez warnings (bez EMAIL_HOST → console backend)
-- [x] 1.2 `manage.py check` bez „template does not exist" dla tras resetu
-- [x] 1.3 `collectstatic --no-input --dry-run` przechodzi
-- [x] 1.4 URL resolver pasuje password_reset / _done / _confirm / _complete
+- [x] 1.1 `manage.py check` przechodzi bez warnings (bez EMAIL_HOST → console backend) — 9a5f874
+- [x] 1.2 `manage.py check` bez „template does not exist" dla tras resetu — 9a5f874
+- [x] 1.3 `collectstatic --no-input --dry-run` przechodzi — 9a5f874
+- [x] 1.4 URL resolver pasuje password_reset / _done / _confirm / _complete — 9a5f874
 
 #### Ręczne
 
-- [x] 1.5 Link „Zapomniałem hasła" na loginie → `/accounts/password_reset/`
-- [x] 1.6 Formularz email → submit istniejącego → done; email+link w terminalu (console)
-- [x] 1.7 Klik link → nowe hasło → „hasło zmienione" → login nowym hasłem działa
-- [x] 1.8 Nieistniejący email → done bez ujawnienia, brak emaila w terminalu
-- [x] 1.9 Ponowny stary link po zmianie → „link nieprawidłowy"
+- [x] 1.5 Link „Zapomniałem hasła" na loginie → `/accounts/password_reset/` — 9a5f874
+- [x] 1.6 Formularz email → submit istniejącego → done; email+link w terminalu (console) — 9a5f874
+- [x] 1.7 Klik link → nowe hasło → „hasło zmienione" → login nowym hasłem działa — 9a5f874
+- [x] 1.8 Nieistniejący email → done bez ujawnienia, brak emaila w terminalu — 9a5f874
+- [x] 1.9 Ponowny stary link po zmianie → „link nieprawidłowy" — 9a5f874
 
 ### Faza 2: Testy (locmem) + deployment verify
 
 #### Automatyczne
 
-- [ ] 2.1 `manage.py test accounts` — zielone (poprzednie + ~6 nowych)
-- [ ] 2.2 `manage.py test` (całość) — green
-- [ ] 2.3 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021)
+- [x] 2.1 `manage.py test accounts` — zielone (16: 10 + 6 nowych)
+- [x] 2.2 `manage.py test` (całość) — green (57)
+- [x] 2.3 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021)
 - [ ] 2.4 Render deploy: service `live`
 
 #### Ręczne
