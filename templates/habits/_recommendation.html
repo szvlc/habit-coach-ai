@@ -14,6 +14,7 @@ Context: recommendation (Recommendation|None), rec_error (str|None), can_generat
 
     {% if recommendation %}
         <div class="mb-4">
+            {# SECURITY: untrusted LLM output — MUST stay auto-escaped. Never add |safe or render as markdown/HTML. #}
             <p class="text-gray-800 whitespace-pre-line">{{ recommendation.text }}</p>
             <p class="text-xs text-gray-400 mt-2">{{ recommendation.created_at|date:"Y-m-d H:i" }}</p>
         </div>
