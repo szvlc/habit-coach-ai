@@ -439,16 +439,18 @@ NFR <10s: wywołanie OpenRouter z twardym `timeout ≈ 9s`; Haiku realnie ~2-4s.
 
 #### Automatyczne
 
-- [x] 4.1 `manage.py test habits` — zielone (40: + 13 nowych S-04), zero realnych wywołań sieci
-- [x] 4.2 `manage.py test accounts` — zielone (10: + 1 nowy)
-- [x] 4.3 `manage.py test` (całość) — green (50)
-- [x] 4.4 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021)
-- [ ] 4.5 Render deploy log: `Applying habits.0003... OK` + service `live`
+- [x] 4.1 `manage.py test habits` — zielone (40: + 13 nowych S-04), zero realnych wywołań sieci — 52d8a85
+- [x] 4.2 `manage.py test accounts` — zielone (10: + 1 nowy) — 52d8a85
+- [x] 4.3 `manage.py test` (całość) — green (50) — 52d8a85
+- [x] 4.4 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021) — 52d8a85
+- [x] 4.5 Service live; migracja `habits.0003` zastosowana (deploy log: „No migrations to apply" — 0003 wszedł wcześniejszym pushem) — 39d014a
 
 #### Ręczne
 
-- [ ] 4.6 Production: „Wygeneruj rekomendację" → tekst <10s cytujący nazwy nawyków
-- [ ] 4.7 Production: odśwież → ostatnia rekomendacja widoczna
-- [ ] 4.8 Production: konto bez danych → empty-state bez przycisku
-- [ ] 4.9 Supabase Tables → `habits_recommendation` ma wpis z `grounded`
-- [ ] 4.10 Render Logs — brak 5xx; log metryki `grounded`; brak wycieku klucza
+- [x] 4.6 Production: „Wygeneruj rekomendację" → realny tekst cytujący „Czytanie" + dane (raz w miesiącu, dni tygodnia). Wymagał 2 fixów: slug `4.5` (3f6f00f) + `max_tokens=500` przeciw 402 (39d014a) — 39d014a
+- [x] 4.7 Production: ostatnia rekomendacja persisted (przycisk „Wygeneruj ponownie") — 39d014a
+- [x] 4.8 Production: konto bez danych → empty-state „Dodaj nawyk…", brak przycisku — 39d014a
+- [x] 4.9 `habits_recommendation` ma wpis z `grounded` — potwierdzone funkcjonalnie (rec persisted + grounded=True przez curl smoke); Supabase UI nie otwierany — 39d014a
+- [x] 4.10 Brak 5xx (generate → 200); metryka `grounded` logowana; klucz nie w odpowiedzi. Render Logs widziane częściowo (402 traceback → fix) — 39d014a
+
+> Uwaga: prod-smoke utworzył jednorazowe konta testowe (`s4smoke/s4diag/s4final*/s4ok/s4win/s4empty+*@example.com`) + nawyki/wykonania/rekomendacje w Supabase. Do posprzątania (jak po S-02/S-03).
