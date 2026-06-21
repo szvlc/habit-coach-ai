@@ -258,14 +258,14 @@ Brak migracji — żaden model nie zmieniony. Zmiana czysto konfiguracyjna + sza
 
 #### Automatyczne
 
-- [x] 2.1 `manage.py test accounts` — zielone (16: 10 + 6 nowych)
-- [x] 2.2 `manage.py test` (całość) — green (57)
-- [x] 2.3 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021)
-- [ ] 2.4 Render deploy: service `live`
+- [x] 2.1 `manage.py test accounts` — zielone (16: 10 + 6 nowych) — caf4b85
+- [x] 2.2 `manage.py test` (całość) — green (57) — caf4b85
+- [x] 2.3 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021) — caf4b85
+- [x] 2.4 Render deploy: service `live` (bez migracji) — caf4b85
 
 #### Ręczne
 
-- [ ] 2.5 Render env: `EMAIL_HOST=smtp.resend.com` + creds; deploy live
-- [ ] 2.6 Production: reset na adres konta Resend → realny email dociera
-- [ ] 2.7 Production: klik link → nowe hasło → login nowym hasłem działa
-- [ ] 2.8 Resend Activity: email delivered; Render Logs brak 5xx / brak wycieku hasła SMTP
+- [x] 2.5 Render env: `EMAIL_HOST=smtp.resend.com` + creds ustawione; deploy live — caf4b85
+- [x] 2.6 Production: reset request → 302→done (brak 500 = SMTP przyjął send); realny email dotarł na skrzynkę — caf4b85
+- [x] 2.7 Production: link → nowe hasło → login nowym hasłem działa (e2e potwierdzone) — caf4b85
+- [x] 2.8 Email delivered (skrzynka); reset POST 302 (brak 5xx); hasło SMTP nie w odpowiedzi — caf4b85
