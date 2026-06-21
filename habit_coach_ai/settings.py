@@ -169,6 +169,22 @@ OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "anthropic/claude-haiku-4.5")
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_TIMEOUT = float(os.environ.get("OPENROUTER_TIMEOUT", "9"))
+
+
+# Email (password reset, FR-003). Provider-agnostic SMTP. Without EMAIL_HOST in
+# env (local/dev), fall back to the console backend so the reset link is printed
+# to the terminal and no real SMTP/credentials are needed. Production sets
+# EMAIL_HOST etc. (Resend SMTP) via Render env.
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
+if EMAIL_HOST:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+    EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+    EMAIL_USE_TLS = True
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "onboarding@resend.dev")
 # Cap completion length: a recommendation is 2-4 sentences. Also keeps each
 # request affordable — OpenRouter bills against max_tokens, and an uncapped
 # request (model default ~64k) gets a 402 on a low/free balance.

@@ -241,18 +241,18 @@ Brak migracji — żaden model nie zmieniony. Zmiana czysto konfiguracyjna + sza
 
 #### Automatyczne
 
-- [ ] 1.1 `manage.py check` przechodzi bez warnings (bez EMAIL_HOST → console backend)
-- [ ] 1.2 `manage.py check` bez „template does not exist" dla tras resetu
-- [ ] 1.3 `collectstatic --no-input --dry-run` przechodzi
-- [ ] 1.4 URL resolver pasuje password_reset / _done / _confirm / _complete
+- [x] 1.1 `manage.py check` przechodzi bez warnings (bez EMAIL_HOST → console backend)
+- [x] 1.2 `manage.py check` bez „template does not exist" dla tras resetu
+- [x] 1.3 `collectstatic --no-input --dry-run` przechodzi
+- [x] 1.4 URL resolver pasuje password_reset / _done / _confirm / _complete
 
 #### Ręczne
 
-- [ ] 1.5 Link „Zapomniałem hasła" na loginie → `/accounts/password_reset/`
-- [ ] 1.6 Formularz email → submit istniejącego → done; email+link w terminalu (console)
-- [ ] 1.7 Klik link → nowe hasło → „hasło zmienione" → login nowym hasłem działa
-- [ ] 1.8 Nieistniejący email → done bez ujawnienia, brak emaila w terminalu
-- [ ] 1.9 Ponowny stary link po zmianie → „link nieprawidłowy"
+- [x] 1.5 Link „Zapomniałem hasła" na loginie → `/accounts/password_reset/`
+- [x] 1.6 Formularz email → submit istniejącego → done; email+link w terminalu (console)
+- [x] 1.7 Klik link → nowe hasło → „hasło zmienione" → login nowym hasłem działa
+- [x] 1.8 Nieistniejący email → done bez ujawnienia, brak emaila w terminalu
+- [x] 1.9 Ponowny stary link po zmianie → „link nieprawidłowy"
 
 ### Faza 2: Testy (locmem) + deployment verify
 

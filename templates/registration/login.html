@@ -44,6 +44,9 @@
             {% if form.password.errors %}
                 <p class="mt-1 text-sm text-red-600">{{ form.password.errors|join:", " }}</p>
             {% endif %}
+            <p class="mt-1 text-right">
+                <a href="{% url 'password_reset' %}" class="text-sm text-indigo-600 hover:text-indigo-700">Zapomniałem hasła</a>
+            </p>
         </div>
 
         <input type="hidden" name="next" value="{{ next }}">

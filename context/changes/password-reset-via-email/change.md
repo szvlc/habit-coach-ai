@@ -1,7 +1,7 @@
 ---
 change_id: password-reset-via-email
 title: Password reset via email
-status: planned
+status: implementing
 created: 2026-06-21
 updated: 2026-06-21
 archived_at: null
