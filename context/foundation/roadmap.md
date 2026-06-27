@@ -38,7 +38,7 @@ Sekwencja jest sortowana pod kątem `market-feedback`: szybkie wystawienie ście
 | S-04  | `first-grounded-recommendation`        | wygenerować rekomendację AI cytującą jego rzeczywistą historię             | S-03              | US-01, FR-011, FR-012          | done     |
 | S-05  | `password-reset-via-email`             | zresetować zapomniane hasło przez link na email                            | S-01              | FR-003                         | done     |
 | S-06  | `auto-recommendation-at-threshold`     | zobaczyć proaktywną rekomendację AI po przekroczeniu progu danych          | S-04              | FR-013                         | done     |
-| S-07  | `logout`                               | wylogować się jawnie (poza wygaśnięciem sesji)                             | S-01              | FR-004                         | proposed |
+| S-07  | `logout`                               | wylogować się jawnie (poza wygaśnięciem sesji)                             | S-01              | FR-004                         | done     |
 
 ## Strumienie
 
@@ -164,7 +164,7 @@ Co już jest na miejscu w bazie kodu na 2026-05-30 (automatycznie zbadane + potw
 - **Blokady:** —
 - **Niewiadome:** —
 - **Ryzyko:** Mała ilość kodu (jeden URL + view + link w base template). Demotowane do nice-to-have w PRD, więc nie blokuje launchu — slot dostępny do dorobienia w dowolnym momencie po S-01.
-- **Status:** proposed
+- **Status:** done
 
 ## Przekazanie backlogu
 
@@ -210,3 +210,4 @@ Co już jest na miejscu w bazie kodu na 2026-05-30 (automatycznie zbadane + potw
 - **S-04: Pierwsza ugruntowana rekomendacja AI (gwiazda przewodnia)** — Zarchiwizowano 2026-06-21 → `context/archive/2026-06-20-first-grounded-recommendation/`. Lekcja: —.
 - **S-05: Reset hasła przez email** — Zarchiwizowano 2026-06-21 → `context/archive/2026-06-21-password-reset-via-email/`. Lekcja: —.
 - **S-06: Automatyczna rekomendacja po przekroczeniu progu** — Zarchiwizowano 2026-06-27 → `context/archive/2026-06-27-auto-recommendation-at-threshold/`. Lekcja: —.
+- **S-07: Wylogowanie** — Zarchiwizowano 2026-06-27 → `context/archive/2026-06-27-logout/`. Lekcja: —.
