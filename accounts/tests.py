@@ -185,6 +185,36 @@ class PasswordResetFlowTests(TestCase):
 
 
 @override_settings(SECURE_SSL_REDIRECT=False)
+class LogoutTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email="logout@example.com", password=STRONG_PASSWORD)
+
+    def test_logout_post_invalidates_session_and_redirects(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse("logout"))
+        # LOGOUT_REDIRECT_URL is 'login'
+        self.assertRedirects(response, reverse("login"))
+        self.assertNotIn("_auth_user_id", self.client.session)
+
+    def test_logout_get_not_allowed(self):
+        # Django 6 LogoutView is POST-only; GET must not log out.
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("logout"))
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(int(self.client.session["_auth_user_id"]), self.user.pk)
+
+    def test_header_shows_logout_when_authenticated(self):
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("accounts:dashboard"))
+        self.assertContains(response, f'action="{reverse("logout")}"')
+        self.assertContains(response, self.user.email)
+
+    def test_header_hides_logout_when_anonymous(self):
+        response = self.client.get(reverse("login"))
+        self.assertNotContains(response, f'action="{reverse("logout")}"')
+
+
+@override_settings(SECURE_SSL_REDIRECT=False)
 class DashboardAutoRecommendationTests(TestCase):
     def _reach_threshold(self, user):
         habit = Habit.objects.create(user=user, name="Czytanie")
