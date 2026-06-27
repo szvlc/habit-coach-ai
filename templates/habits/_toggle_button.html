@@ -12,8 +12,11 @@ with HTMX the form is intercepted and swapped in place (hx-swap="outerHTML").
     {% csrf_token %}
     <button type="submit"
             aria-pressed="{{ done|yesno:'true,false' }}"
-            class="text-sm font-medium py-1 px-3 rounded-md transition
-                   {% if done %}bg-green-600 hover:bg-green-700 text-white{% else %}border border-gray-300 text-gray-700 hover:bg-gray-50{% endif %}">
-        {% if done %}✓ Zrobione dziś{% else %}Oznacz wykonane{% endif %}
+            class="inline-flex items-center gap-1.5 text-sm font-medium py-1.5 px-3 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-500
+                   {% if done %}bg-green-600 hover:bg-green-700 text-white shadow-sm{% else %}border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400{% endif %}">
+        {% if done %}
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Zrobione dziś
+        {% else %}Oznacz wykonane{% endif %}
     </button>
 </form>

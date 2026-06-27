@@ -5,10 +5,13 @@
 {% block container_width %}max-w-4xl{% endblock %}
 
 {% block content %}
-<div class="bg-white rounded-lg shadow-sm p-8">
+<div class="card">
     <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold">Historia (30 dni)</h1>
-        <a href="{% url 'accounts:dashboard' %}" class="text-sm text-indigo-600 hover:text-indigo-700">← Dashboard</a>
+        <h1 class="text-2xl font-bold tracking-tight">Historia <span class="text-gray-400 font-medium text-lg">· 30 dni</span></h1>
+        <a href="{% url 'accounts:dashboard' %}" class="link">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Dashboard
+        </a>
     </div>
 
     {% if rows %}
@@ -44,10 +47,9 @@
         </div>
         <p class="mt-4 text-xs text-gray-500">Zielone pole = wykonane. Logowanie odbywa się na <a href="{% url 'accounts:dashboard' %}" class="text-indigo-600 hover:text-indigo-700">dashboardzie</a>.</p>
     {% else %}
-        <div class="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center">
+        <div class="empty-state">
             <p class="text-gray-600 mb-4">Nie masz aktywnych nawyków.</p>
-            <a href="{% url 'habits:add' %}"
-               class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-md transition">
+            <a href="{% url 'habits:add' %}" class="btn-primary">
                 Dodaj swój pierwszy nawyk
             </a>
         </div>

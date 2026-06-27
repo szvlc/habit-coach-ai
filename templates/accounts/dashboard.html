@@ -2,36 +2,57 @@
 
 {% block title %}Twoje nawyki · HabitCoach AI{% endblock %}
 
+{% block container_width %}max-w-2xl{% endblock %}
+
 {% block content %}
 {% include "habits/_recommendation.html" %}
-<div class="bg-white rounded-lg shadow-sm p-8">
-    <h1 class="text-2xl font-bold mb-6">Witaj, {{ user.email }}</h1>
+<div class="card">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold tracking-tight">Witaj 👋</h1>
+        <p class="text-sm text-gray-500 mt-1">{{ user.email }}</p>
+    </div>
 
     {% if habits %}
-        <ul class="divide-y divide-gray-100 mb-6">
+        <div class="flex items-center justify-between mb-3">
+            <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-400">Twoje nawyki</h2>
+            <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">{{ habits|length }}</span>
+        </div>
+        <ul class="divide-y divide-gray-100 mb-6 -mx-2">
             {% for habit in habits %}
-                <li class="flex items-center justify-between py-3">
-                    <span class="font-medium">{{ habit.name }}</span>
-                    <span class="flex items-center gap-4 text-sm">
+                <li class="flex items-center justify-between gap-3 px-2 py-3 rounded-lg hover:bg-gray-50 transition">
+                    <span class="flex items-center gap-3 min-w-0">
+                        <span class="h-2 w-2 flex-shrink-0 rounded-full {% if habit.done_today %}bg-green-500{% else %}bg-gray-300{% endif %}"></span>
+                        <span class="font-medium truncate">{{ habit.name }}</span>
+                    </span>
+                    <span class="flex items-center gap-3 text-sm flex-shrink-0">
                         {% include "habits/_toggle_button.html" with habit=habit done=habit.done_today %}
-                        <a href="{% url 'habits:edit' habit.pk %}" class="text-indigo-600 hover:text-indigo-700">Edytuj</a>
-                        <a href="{% url 'habits:archive' habit.pk %}" class="text-gray-500 hover:text-red-600">Archiwizuj</a>
+                        <a href="{% url 'habits:edit' habit.pk %}" class="text-gray-400 hover:text-indigo-600 transition" title="Edytuj" aria-label="Edytuj nawyk {{ habit.name }}">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </a>
+                        <a href="{% url 'habits:archive' habit.pk %}" class="text-gray-400 hover:text-red-600 transition" title="Archiwizuj" aria-label="Archiwizuj nawyk {{ habit.name }}">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+                        </a>
                     </span>
                 </li>
             {% endfor %}
         </ul>
-        <div class="flex items-center gap-4">
-            <a href="{% url 'habits:add' %}"
-               class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-md transition">
+        <div class="flex items-center justify-between gap-4 pt-2 border-t border-gray-100">
+            <a href="{% url 'habits:add' %}" class="btn-primary">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 Dodaj kolejny
             </a>
-            <a href="{% url 'habits:history' %}" class="text-sm text-indigo-600 hover:text-indigo-700">Historia</a>
+            <a href="{% url 'habits:history' %}" class="link">
+                Historia
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
         </div>
     {% else %}
-        <div class="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center">
+        <div class="empty-state">
+            <span class="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-indigo-50 text-indigo-500">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </span>
             <p class="text-gray-600 mb-4">Nie masz jeszcze żadnych nawyków.</p>
-            <a href="{% url 'habits:add' %}"
-               class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-md transition">
+            <a href="{% url 'habits:add' %}" class="btn-primary">
                 Dodaj swój pierwszy nawyk
             </a>
         </div>

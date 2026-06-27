@@ -7,17 +7,25 @@ Context: recommendation (Recommendation|None), rec_error (str|None), can_generat
 should_auto_generate (bool — FR-013: render a lazy hx-trigger=load element that
 auto-generates the first proactive recommendation when the threshold is due).
 {% endcomment %}
-<div id="recommendation-section" class="bg-white rounded-lg shadow-sm p-8 mb-6">
-    <h2 class="text-lg font-bold mb-4">Rekomendacja AI</h2>
+<div id="recommendation-section" class="card mb-6">
+    <h2 class="flex items-center gap-2 text-lg font-bold mb-4">
+        <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3z"/><path d="M19 14l.7 1.8L21.5 16.5 19.7 17.2 19 19l-.7-1.8L16.5 16.5l1.8-.7L19 14z"/></svg>
+        </span>
+        Rekomendacja AI
+    </h2>
 
     {% if rec_error %}
-        <p class="px-4 py-2 rounded bg-red-50 text-red-700 text-sm mb-4">{{ rec_error }}</p>
+        <p class="flex items-start gap-2 px-4 py-3 rounded-lg border border-red-100 bg-red-50 text-red-700 text-sm mb-4">{{ rec_error }}</p>
     {% endif %}
 
     {% if recommendation %}
-        <div class="mb-4">
+        <div class="mb-4 rounded-lg border border-gray-100 bg-gray-50/60 p-4">
             {% if recommendation.proactive %}
-                <span class="inline-block mb-2 text-xs font-medium px-2 py-0.5 rounded bg-indigo-50 text-indigo-700">Automatyczna</span>
+                <span class="inline-flex items-center gap-1 mb-2 text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700">
+                    <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    Automatyczna
+                </span>
             {% endif %}
             {# SECURITY: untrusted LLM output — MUST stay auto-escaped. Never add |safe or render as markdown/HTML. #}
             <p class="text-gray-800 whitespace-pre-line">{{ recommendation.text }}</p>
@@ -38,7 +46,8 @@ auto-generates the first proactive recommendation when the threshold is due).
                 hx-target="#recommendation-section"
                 hx-swap="outerHTML"
                 hx-indicator="#rec-spinner"
-                class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-md transition">
+                class="btn-primary">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3z"/></svg>
             {% if recommendation %}Wygeneruj ponownie{% else %}Wygeneruj rekomendację{% endif %}
         </button>
         <span id="rec-spinner" class="htmx-indicator text-sm text-gray-500 ml-3">Generuję…</span>
