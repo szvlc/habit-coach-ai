@@ -3,7 +3,7 @@ project: HabitCoach AI
 version: 1
 status: draft
 created: 2026-05-30
-updated: 2026-06-21
+updated: 2026-06-27
 prd_version: 1
 main_goal: market-feedback
 top_blocker: decisions
@@ -37,7 +37,7 @@ Sekwencja jest sortowana pod kątem `market-feedback`: szybkie wystawienie ście
 | S-03  | `log-execution-and-history`            | jednym kliknięciem zalogować wykonanie i zobaczyć 30 dni historii          | S-02              | US-01, FR-008, FR-009, FR-010  | done     |
 | S-04  | `first-grounded-recommendation`        | wygenerować rekomendację AI cytującą jego rzeczywistą historię             | S-03              | US-01, FR-011, FR-012          | done     |
 | S-05  | `password-reset-via-email`             | zresetować zapomniane hasło przez link na email                            | S-01              | FR-003                         | done     |
-| S-06  | `auto-recommendation-at-threshold`     | zobaczyć proaktywną rekomendację AI po przekroczeniu progu danych          | S-04              | FR-013                         | blocked  |
+| S-06  | `auto-recommendation-at-threshold`     | zobaczyć proaktywną rekomendację AI po przekroczeniu progu danych          | S-04              | FR-013                         | done     |
 | S-07  | `logout`                               | wylogować się jawnie (poza wygaśnięciem sesji)                             | S-01              | FR-004                         | proposed |
 
 ## Strumienie
@@ -152,7 +152,7 @@ Co już jest na miejscu w bazie kodu na 2026-05-30 (automatycznie zbadane + potw
   - Próg danych — ile dni logowań, dla ilu nawyków? (PRD §Open Questions Q1 — wstępnie ~7 dni dla ≥ 1 nawyku, ale dokładna definicja open). Owner: user. Blokuje: **tak**.
   - Częstotliwość auto-rekomendacji — jednorazowo po pierwszym osiągnięciu progu, czy cyklicznie co N dni? (PRD §Open Questions Q3). Owner: user. Blokuje: **tak**.
 - **Ryzyko:** Logika progu i częstotliwości jest prosta technicznie, ale wymaga decyzji produktowych przed implementacją. Bez tych decyzji slice nie jest planowalny. Jednorazowo-po-progu jest pragmatycznym defaultem MVP per PRD §Open Questions Q3 resolution note.
-- **Status:** blocked (Q1, Q3 z Block: tak)
+- **Status:** done
 
 ### S-07: Wylogowanie
 
@@ -209,3 +209,4 @@ Co już jest na miejscu w bazie kodu na 2026-05-30 (automatycznie zbadane + potw
 - **S-03: Logowanie wykonania + widok historii 30 dni** — Zarchiwizowano 2026-06-20 → `context/archive/2026-06-13-log-execution-and-history/`. Lekcja: —.
 - **S-04: Pierwsza ugruntowana rekomendacja AI (gwiazda przewodnia)** — Zarchiwizowano 2026-06-21 → `context/archive/2026-06-20-first-grounded-recommendation/`. Lekcja: —.
 - **S-05: Reset hasła przez email** — Zarchiwizowano 2026-06-21 → `context/archive/2026-06-21-password-reset-via-email/`. Lekcja: —.
+- **S-06: Automatyczna rekomendacja po przekroczeniu progu** — Zarchiwizowano 2026-06-27 → `context/archive/2026-06-27-auto-recommendation-at-threshold/`. Lekcja: —.
