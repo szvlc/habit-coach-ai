@@ -1,7 +1,7 @@
 ---
 change_id: auto-recommendation-at-threshold
 title: Auto recommendation at threshold
-status: implemented
+status: impl_reviewed
 created: 2026-06-27
 updated: 2026-06-27
 archived_at: null

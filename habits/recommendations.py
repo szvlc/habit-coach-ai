@@ -150,8 +150,15 @@ def can_generate(user):
 
 
 def logged_day_count(user):
-    """Number of distinct dates on which the user logged any execution."""
-    return HabitExecution.objects.filter(habit__user=user).values("date").distinct().count()
+    """Number of distinct dates on which the user logged an execution of an
+    active habit. Excludes archived habits for parity with history_for (the
+    prompt source), so the threshold counts the same data the rec is built from."""
+    return (
+        HabitExecution.objects.filter(habit__user=user, habit__archived=False)
+        .values("date")
+        .distinct()
+        .count()
+    )
 
 
 def auto_recommendation_due(user):
@@ -159,8 +166,8 @@ def auto_recommendation_due(user):
     recommendation generated yet. Persisting only on success keeps this True
     after a silent failure, so it retries on the next dashboard load."""
     return (
-        logged_day_count(user) >= HISTORY_THRESHOLD_DAYS
-        and not Recommendation.objects.filter(user=user, proactive=True).exists()
+        not Recommendation.objects.filter(user=user, proactive=True).exists()
+        and logged_day_count(user) >= HISTORY_THRESHOLD_DAYS
     )
 
 
