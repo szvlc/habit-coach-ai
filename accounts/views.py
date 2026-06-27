@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.views.generic import CreateView, TemplateView
 
 from habits.models import Habit, HabitExecution, Recommendation
-from habits.recommendations import can_generate
+from habits.recommendations import auto_recommendation_due, can_generate
 
 from .forms import CustomUserCreationForm
 
@@ -35,4 +35,5 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context["habits"] = habits
         context["recommendation"] = Recommendation.objects.latest_for(self.request.user)
         context["can_generate"] = can_generate(self.request.user)
+        context["should_auto_generate"] = auto_recommendation_due(self.request.user)
         return context

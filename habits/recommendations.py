@@ -13,9 +13,12 @@ from django.conf import settings
 from django.utils import timezone
 from openai import OpenAI
 
-from .models import Habit, HabitExecution
+from .models import Habit, HabitExecution, Recommendation
 
 HISTORY_DAYS = 30
+# Proactive recommendation (FR-013): fire after the user has logged on this many
+# distinct days.
+HISTORY_THRESHOLD_DAYS = 7
 
 # Monday=0 .. Sunday=6 (matches date.weekday())
 WEEKDAY_NAMES_PL = [
@@ -143,6 +146,21 @@ def can_generate(user):
     return (
         Habit.objects.active(user).exists()
         and HabitExecution.objects.filter(habit__user=user).exists()
+    )
+
+
+def logged_day_count(user):
+    """Number of distinct dates on which the user logged any execution."""
+    return HabitExecution.objects.filter(habit__user=user).values("date").distinct().count()
+
+
+def auto_recommendation_due(user):
+    """FR-013 one-time proactive trigger: threshold reached AND no proactive
+    recommendation generated yet. Persisting only on success keeps this True
+    after a silent failure, so it retries on the next dashboard load."""
+    return (
+        logged_day_count(user) >= HISTORY_THRESHOLD_DAYS
+        and not Recommendation.objects.filter(user=user, proactive=True).exists()
     )
 
 

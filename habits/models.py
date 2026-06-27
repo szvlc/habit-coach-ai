@@ -84,6 +84,7 @@ class Recommendation(models.Model):
     text = models.TextField()
     model_used = models.CharField(max_length=100)
     grounded = models.BooleanField(default=False)
+    proactive = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     objects = RecommendationManager()

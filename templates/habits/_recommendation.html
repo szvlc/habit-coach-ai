@@ -3,7 +3,9 @@ Recommendation section (FR-011/012). Single source of truth: included by the
 dashboard (with latest recommendation) AND returned by RecommendationGenerateView
 for the HTMX swap. The button targets #recommendation-section with outerHTML, so
 the whole section is replaced in place after generating.
-Context: recommendation (Recommendation|None), rec_error (str|None), can_generate (bool).
+Context: recommendation (Recommendation|None), rec_error (str|None), can_generate (bool),
+should_auto_generate (bool — FR-013: render a lazy hx-trigger=load element that
+auto-generates the first proactive recommendation when the threshold is due).
 {% endcomment %}
 <div id="recommendation-section" class="bg-white rounded-lg shadow-sm p-8 mb-6">
     <h2 class="text-lg font-bold mb-4">Rekomendacja AI</h2>
@@ -14,13 +16,24 @@ Context: recommendation (Recommendation|None), rec_error (str|None), can_generat
 
     {% if recommendation %}
         <div class="mb-4">
+            {% if recommendation.proactive %}
+                <span class="inline-block mb-2 text-xs font-medium px-2 py-0.5 rounded bg-indigo-50 text-indigo-700">Automatyczna</span>
+            {% endif %}
             {# SECURITY: untrusted LLM output — MUST stay auto-escaped. Never add |safe or render as markdown/HTML. #}
             <p class="text-gray-800 whitespace-pre-line">{{ recommendation.text }}</p>
             <p class="text-xs text-gray-400 mt-2">{{ recommendation.created_at|date:"Y-m-d H:i" }}</p>
         </div>
     {% endif %}
 
-    {% if can_generate %}
+    {% if should_auto_generate and not recommendation %}
+        {# FR-013: fire once on load; the response replaces this whole section. #}
+        <div hx-post="{% url 'habits:recommend_auto' %}"
+             hx-trigger="load"
+             hx-target="#recommendation-section"
+             hx-swap="outerHTML">
+            <span class="text-sm text-gray-500">Generuję rekomendację…</span>
+        </div>
+    {% elif can_generate %}
         <button hx-post="{% url 'habits:recommend' %}"
                 hx-target="#recommendation-section"
                 hx-swap="outerHTML"

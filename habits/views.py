@@ -10,7 +10,12 @@ from django.views.generic import CreateView, TemplateView, UpdateView
 
 from .forms import HabitForm
 from .models import Habit, HabitExecution, Recommendation
-from .recommendations import can_generate, generate_recommendation, is_grounded
+from .recommendations import (
+    auto_recommendation_due,
+    can_generate,
+    generate_recommendation,
+    is_grounded,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -146,3 +151,35 @@ class RecommendationGenerateView(LoginRequiredMixin, View):
         if request.headers.get("HX-Request"):
             return render(request, "habits/_recommendation.html", context)
         return redirect("accounts:dashboard")
+
+
+class RecommendationAutoView(LoginRequiredMixin, View):
+    """Proactive recommendation (FR-013). Fired by the dashboard's lazy
+    hx-trigger=load only when due. Generates once; silent on failure (no row,
+    no banner) so the due-check stays True and retries on the next load."""
+
+    def post(self, request):
+        recommendation = Recommendation.objects.latest_for(request.user)
+        if auto_recommendation_due(request.user):
+            try:
+                text, model_used = generate_recommendation(request.user)
+                recommendation = Recommendation.objects.create(
+                    user=request.user,
+                    text=text,
+                    model_used=model_used,
+                    grounded=is_grounded(text, request.user),
+                    proactive=True,
+                )
+                logger.info(
+                    "proactive recommendation generated user=%s model=%s grounded=%s",
+                    request.user.pk,
+                    model_used,
+                    recommendation.grounded,
+                )
+            except Exception:
+                logger.exception("proactive recommendation generation failed")
+        return render(
+            request,
+            "habits/_recommendation.html",
+            {"recommendation": recommendation, "can_generate": can_generate(request.user)},
+        )

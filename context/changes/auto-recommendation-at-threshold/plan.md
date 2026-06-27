@@ -246,20 +246,20 @@ Auto-trigger to 1 dodatkowy request HTMX (tylko gdy due) + 1 wywołanie OpenRout
 
 #### Automatyczne
 
-- [ ] 1.1 `manage.py check` przechodzi
-- [ ] 1.2 `manage.py makemigrations --check habits` zwraca „No changes detected" po wygenerowaniu 0004
-- [ ] 1.3 `manage.py migrate` przechodzi
-- [ ] 1.4 URL resolver pasuje `/habits/recommendation/auto/`
-- [ ] 1.5 `collectstatic --no-input --dry-run` przechodzi
-- [ ] 1.6 Brak ImportError (`auto_recommendation_due` w accounts/views.py)
+- [x] 1.1 `manage.py check` przechodzi
+- [x] 1.2 `manage.py makemigrations --check habits` zwraca „No changes detected" po wygenerowaniu 0004
+- [x] 1.3 `manage.py migrate` przechodzi
+- [x] 1.4 URL resolver pasuje `/habits/recommendation/auto/`
+- [x] 1.5 `collectstatic --no-input --dry-run` przechodzi
+- [x] 1.6 Brak ImportError (`auto_recommendation_due` w accounts/views.py)
 
 #### Ręczne
 
-- [ ] 1.7 User <7 dni logowań → brak auto-elementu (zachowanie S-04)
-- [ ] 1.8 User ≥7 dni, bez proaktywnej → wejście → „Generuję…" → karta + tag „Automatyczna"
-- [ ] 1.9 Po wygenerowaniu → odświeżenie → brak ponownej auto-generacji (jednorazowo)
-- [ ] 1.10 Wymuszony błąd auto-gen → brak baneru, brak wiersza; po naprawie generuje
-- [ ] 1.11 Drugi user nie wpływa na próg pierwszego
+- [x] 1.7 User <7 dni logowań → brak auto-elementu (zachowanie S-04)
+- [x] 1.8 User ≥7 dni, bez proaktywnej → wejście → „Generuję…" → karta + tag „Automatyczna"
+- [x] 1.9 Po wygenerowaniu → odświeżenie → brak ponownej auto-generacji (jednorazowo)
+- [x] 1.10 Wymuszony błąd auto-gen → brak baneru, brak wiersza; po naprawie generuje
+- [x] 1.11 Drugi user nie wpływa na próg pierwszego
 
 ### Faza 2: Testy (mock LLM) + deployment verify
 
