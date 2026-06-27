@@ -438,3 +438,103 @@ class RecommendationServiceTests(TestCase):
         self.assertEqual(kwargs["max_tokens"], 500)
         self.assertEqual(kwargs["timeout"], 9.0)
         self.assertEqual(text, "Czytanie idzie świetnie.")
+
+
+@override_settings(SECURE_SSL_REDIRECT=False)
+class AutoRecommendationDueTests(TestCase):
+    def _log_days(self, user, n):
+        habit = Habit.objects.create(user=user, name="Czytanie")
+        today = timezone.localdate()
+        for d in range(n):
+            HabitExecution.objects.create(habit=habit, date=today - timedelta(days=d))
+        return habit
+
+    def test_below_threshold_not_due(self):
+        user = User.objects.create_user(email="owner@example.com", password=STRONG_PASSWORD)
+        self._log_days(user, 6)
+        self.assertEqual(recommendations.logged_day_count(user), 6)
+        self.assertFalse(recommendations.auto_recommendation_due(user))
+
+    def test_at_threshold_due(self):
+        user = User.objects.create_user(email="owner@example.com", password=STRONG_PASSWORD)
+        self._log_days(user, 7)
+        self.assertTrue(recommendations.auto_recommendation_due(user))
+
+    def test_not_due_after_proactive_exists(self):
+        user = User.objects.create_user(email="owner@example.com", password=STRONG_PASSWORD)
+        self._log_days(user, 7)
+        Recommendation.objects.create(user=user, text="x", model_used="m", proactive=True)
+        self.assertFalse(recommendations.auto_recommendation_due(user))
+
+    def test_threshold_is_per_user(self):
+        a = User.objects.create_user(email="a@example.com", password=STRONG_PASSWORD)
+        b = User.objects.create_user(email="b@example.com", password=STRONG_PASSWORD)
+        self._log_days(a, 3)
+        self._log_days(b, 10)
+        self.assertEqual(recommendations.logged_day_count(a), 3)
+        self.assertFalse(recommendations.auto_recommendation_due(a))
+
+
+@override_settings(SECURE_SSL_REDIRECT=False)
+class RecommendationAutoViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email="owner@example.com", password=STRONG_PASSWORD)
+        self.url = reverse("habits:recommend_auto")
+        self.client.force_login(self.user)
+
+    def _reach_threshold(self):
+        habit = Habit.objects.create(user=self.user, name="Czytanie")
+        today = timezone.localdate()
+        for d in range(7):
+            HabitExecution.objects.create(habit=habit, date=today - timedelta(days=d))
+
+    def test_auto_generates_proactive_recommendation_when_due(self):
+        self._reach_threshold()
+        with patch(
+            "habits.views.generate_recommendation",
+            return_value=("Twoje Czytanie ma streak.", "anthropic/claude-haiku-4.5"),
+        ):
+            response = self.client.post(self.url, HTTP_HX_REQUEST="true")
+        self.assertEqual(response.status_code, 200)
+        rec = Recommendation.objects.get(user=self.user)
+        self.assertTrue(rec.proactive)
+        self.assertContains(response, "Automatyczna")
+        self.assertContains(response, "Czytanie")
+
+    def test_auto_noop_when_not_due(self):
+        # only 3 logged days -> not due
+        habit = Habit.objects.create(user=self.user, name="Czytanie")
+        today = timezone.localdate()
+        for d in range(3):
+            HabitExecution.objects.create(habit=habit, date=today - timedelta(days=d))
+        with patch("habits.views.generate_recommendation") as gen:
+            response = self.client.post(self.url, HTTP_HX_REQUEST="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(gen.called)
+        self.assertEqual(Recommendation.objects.filter(user=self.user).count(), 0)
+
+    def test_auto_one_time_after_success(self):
+        self._reach_threshold()
+        with patch(
+            "habits.views.generate_recommendation",
+            return_value=("Czytanie ok", "m"),
+        ):
+            self.client.post(self.url, HTTP_HX_REQUEST="true")
+        # second call must NOT generate again
+        with patch("habits.views.generate_recommendation", side_effect=AssertionError("called again")):
+            self.client.post(self.url, HTTP_HX_REQUEST="true")
+        self.assertEqual(Recommendation.objects.filter(user=self.user).count(), 1)
+
+    def test_auto_silent_on_error(self):
+        self._reach_threshold()
+        with patch("habits.views.generate_recommendation", side_effect=RuntimeError("boom")):
+            response = self.client.post(self.url, HTTP_HX_REQUEST="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Recommendation.objects.filter(user=self.user).count(), 0)
+        self.assertTrue(recommendations.auto_recommendation_due(self.user))
+
+    def test_auto_requires_login(self):
+        self.client.logout()
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("login"), response.url)

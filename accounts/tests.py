@@ -1,4 +1,5 @@
 import re
+from datetime import timedelta
 
 from django.contrib.auth import get_user_model
 from django.core import mail
@@ -181,3 +182,27 @@ class PasswordResetFlowTests(TestCase):
     def test_login_page_has_reset_link(self):
         response = self.client.get(reverse("login"))
         self.assertContains(response, reverse("password_reset"))
+
+
+@override_settings(SECURE_SSL_REDIRECT=False)
+class DashboardAutoRecommendationTests(TestCase):
+    def _reach_threshold(self, user):
+        habit = Habit.objects.create(user=user, name="Czytanie")
+        today = timezone.localdate()
+        for d in range(7):
+            HabitExecution.objects.create(habit=habit, date=today - timedelta(days=d))
+
+    def test_should_auto_generate_true_at_threshold(self):
+        user = User.objects.create_user(email="auto@example.com", password=STRONG_PASSWORD)
+        self._reach_threshold(user)
+        self.client.force_login(user)
+        response = self.client.get(reverse("accounts:dashboard"))
+        self.assertTrue(response.context["should_auto_generate"])
+
+    def test_should_auto_generate_false_after_proactive(self):
+        user = User.objects.create_user(email="auto2@example.com", password=STRONG_PASSWORD)
+        self._reach_threshold(user)
+        Recommendation.objects.create(user=user, text="x", model_used="m", proactive=True)
+        self.client.force_login(user)
+        response = self.client.get(reverse("accounts:dashboard"))
+        self.assertFalse(response.context["should_auto_generate"])
