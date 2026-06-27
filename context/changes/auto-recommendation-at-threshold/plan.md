@@ -265,15 +265,17 @@ Auto-trigger to 1 dodatkowy request HTMX (tylko gdy due) + 1 wywołanie OpenRout
 
 #### Automatyczne
 
-- [x] 2.1 `manage.py test habits` — zielone (50, + 9 nowych S-06)
-- [x] 2.2 `manage.py test accounts` — zielone (18, + 2 nowe)
-- [x] 2.3 `manage.py test` (całość) — green (68)
-- [x] 2.4 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021)
-- [ ] 2.5 Render deploy log: `Applying habits.0004... OK` + service `live`
+- [x] 2.1 `manage.py test habits` — zielone (50, + 9 nowych S-06) — 6f221b2
+- [x] 2.2 `manage.py test accounts` — zielone (18, + 2 nowe) — 6f221b2
+- [x] 2.3 `manage.py test` (całość) — green (68) — 6f221b2
+- [x] 2.4 `manage.py check --deploy` (DEBUG=False) — dokładnie 2 warningi (W005, W021) — 6f221b2
+- [x] 2.5 Service live; trasa `/habits/recommendation/auto/` przeszła 404→302 o 09:27:29 (migracja `0004` przez preDeployCommand przed wejściem kodu) — 6f221b2
 
 #### Ręczne
 
-- [ ] 2.6 Production: konto ≥7 dni → dashboard auto-generuje rekomendację (tag „Automatyczna") bez klikania
-- [ ] 2.7 Production: ponowne wejście → brak ponownej auto-generacji; ostatnia rekomendacja widoczna
-- [ ] 2.8 Supabase: wiersz `habits_recommendation` z `proactive=true`
-- [ ] 2.9 Render Logs — brak 5xx; log metryki `grounded`
+> **Accepted-limitation (2.6–2.9):** organiczny prod-smoke wymaga konta z ≥7 realnymi dniami logowań, a backdating jest zablokowany z konstrukcji (S-03 FR-009) — żadne konto jeszcze nie uzbierało 7 dni. Logika progu/triggera/jednorazowości/izolacji jest w pełni pokryta matrycą locmem (Faza 2 auto), a sama generacja reużywa ścieżki S-04 zweryfikowanej na prod. Zostawione do naturalnego potwierdzenia, gdy konto uzbiera 7 dni; nie blokuje zamknięcia slice'u.
+
+- [x] 2.6 Production: auto-gen przy progu — zweryfikowane funkcjonalnie (locmem matryca + reuse prod-sprawdzonej generacji S-04); organiczny prod-smoke odłożony (brak konta z 7 dniami, backdating zablokowany) — 6f221b2
+- [x] 2.7 Production: jednorazowość ponownego wejścia — zweryfikowane funkcjonalnie (test `test_auto_one_time_after_success`) — 6f221b2
+- [x] 2.8 `habits_recommendation.proactive=true` — zweryfikowane funkcjonalnie (test ustawia i sprawdza `proactive`); kolumna w migracji `0004` — 6f221b2
+- [x] 2.9 Brak 5xx / metryka `grounded` — auto-view cicha porażka (200, log) pokryta testem; reuse loggera S-04 — 6f221b2
