@@ -137,7 +137,7 @@ Brak migracji — zmiana wyłącznie szablonu + testy.
 
 #### Ręczne
 
-- [ ] 1.6 Zalogowany: header z emailem + „Wyloguj"; klik → login; sesja unieważniona
-- [ ] 1.7 Niezalogowany (login): brak kontrolki „Wyloguj" w headerze
-- [ ] 1.8 GET `/accounts/logout/` → 405 (POST-only)
-- [ ] 1.9 Production: zaloguj → „Wyloguj" → login; brak 5xx
+- [x] 1.6 Zalogowany: header z emailem + „Wyloguj"; klik → login; sesja unieważniona
+- [x] 1.7 Niezalogowany (login): brak kontrolki „Wyloguj" w headerze
+- [x] 1.8 GET `/accounts/logout/` → 405 (POST-only)
+- [ ] 1.9 Production: zaloguj → „Wyloguj" → login; brak 5xx (deferred — prod smoke po deployu)
