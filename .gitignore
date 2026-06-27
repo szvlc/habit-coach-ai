@@ -13,6 +13,10 @@ db.sqlite3
 db.sqlite3-journal
 staticfiles/
 
+# Dev server logs (ad-hoc runserver captures)
+runserver_out.log
+runserver_err.log
+
 # Secrets / env
 .env
 .env.local
