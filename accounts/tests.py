@@ -112,6 +112,18 @@ class DashboardViewTests(TestCase):
         self.assertTrue(flags["Zrobiony"])
         self.assertFalse(flags["Niezrobiony"])
 
+    def test_dashboard_loads_htmx_library(self):
+        # Regression guard: toggle and AI-recommendation refresh are driven by
+        # hx-* attributes; the generate button has no non-JS fallback. If the
+        # htmx <script> is dropped from base.html, the recommendation silently
+        # stops refreshing. Assert the library is actually loaded.
+        user = User.objects.create_user(email="htmx@example.com", password=STRONG_PASSWORD)
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("accounts:dashboard"))
+
+        self.assertContains(response, "htmx.org")
+
     def test_dashboard_shows_latest_recommendation_and_can_generate_flag(self):
         user = User.objects.create_user(email="rec@example.com", password=STRONG_PASSWORD)
         other = User.objects.create_user(email="other@example.com", password=STRONG_PASSWORD)
