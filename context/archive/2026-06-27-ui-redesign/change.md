@@ -1,10 +1,10 @@
 ---
 change_id: ui-redesign
 title: Polished SaaS UI redesign
-status: implemented
+status: archived
 created: 2026-06-27
 updated: 2026-06-28
-archived_at: null
+archived_at: 2026-06-28T10:10:17Z
 ---
 
 ## Notes
