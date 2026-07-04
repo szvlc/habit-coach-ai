@@ -32,6 +32,25 @@ WEEKDAY_NAMES_PL = [
 ]
 
 
+def longest_streak(dates):
+    """Longest run of consecutive calendar days present in `dates`. 0 if empty.
+
+    Order-independent; duplicates collapse. Counts each run once from its start
+    (a day whose previous day is absent)."""
+    unique = set(dates)
+    best = 0
+    for d in unique:
+        if d - timedelta(days=1) in unique:
+            continue  # not the start of a run
+        length = 1
+        cur = d
+        while cur + timedelta(days=1) in unique:
+            length += 1
+            cur += timedelta(days=1)
+        best = max(best, length)
+    return best
+
+
 def build_history_context(user):
     """Assemble grounding data for one user: active habits + 30-day signals.
 
@@ -80,6 +99,7 @@ def build_history_context(user):
                 "name": habit.name,
                 "done_count": len(done_days),
                 "current_streak": streak,
+                "longest_streak": longest_streak(done_days),
                 "completion_rate": completion_rate,
                 "weakest_weekday": weakest_weekday,
                 "last_break": last_break,
@@ -132,6 +152,8 @@ def build_messages(context):
             f"- Nawyk „{h['name']}”: wykonany {h['done_count']}/{HISTORY_DAYS} dni "
             f"({h['completion_rate']}%), aktualny streak {h['current_streak']} dni"
         ]
+        if h.get("longest_streak", 0) > 1:
+            parts.append(f", najdłuższa seria: {h['longest_streak']} dni")
         if h["weakest_weekday"]:
             parts.append(f", najsłabszy dzień: {h['weakest_weekday']}")
         if h["last_break"]:

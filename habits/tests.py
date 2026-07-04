@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
@@ -581,6 +581,68 @@ class HabitAnalyticsViewTests(TestCase):
         self.client.force_login(self.owner)
         response = self.client.get(reverse("accounts:dashboard"))
         self.assertContains(response, reverse("habits:analytics"))
+
+
+class LongestStreakTests(TestCase):
+    def test_empty_is_zero(self):
+        self.assertEqual(recommendations.longest_streak([]), 0)
+
+    def test_single_day_is_one(self):
+        self.assertEqual(recommendations.longest_streak([date(2026, 1, 6)]), 1)
+
+    def test_three_consecutive_days(self):
+        days = [date(2026, 1, 6), date(2026, 1, 7), date(2026, 1, 8)]
+        self.assertEqual(recommendations.longest_streak(days), 3)
+
+    def test_gap_breaks_streak_takes_longest_run(self):
+        # 6,7 (run of 2) — gap — 9,10,11 (run of 3)
+        days = [date(2026, 1, 6), date(2026, 1, 7),
+                date(2026, 1, 9), date(2026, 1, 10), date(2026, 1, 11)]
+        self.assertEqual(recommendations.longest_streak(days), 3)
+
+    def test_input_order_does_not_matter(self):
+        days = [date(2026, 1, 11), date(2026, 1, 6), date(2026, 1, 10),
+                date(2026, 1, 7), date(2026, 1, 9)]
+        self.assertEqual(recommendations.longest_streak(days), 3)
+
+
+@override_settings(SECURE_SSL_REDIRECT=False)
+class BuildHistoryLongestStreakTests(TestCase):
+    def test_context_includes_longest_streak_distinct_from_current(self):
+        user = User.objects.create_user(email="ls@example.com", password=STRONG_PASSWORD)
+        habit = Habit.objects.create(user=user, name="Bieganie")
+        today = timezone.localdate()
+        # current run of 3 (today, -1, -2)
+        for offset in (0, 1, 2):
+            HabitExecution.objects.create(habit=habit, date=today - timedelta(days=offset))
+        # earlier run of 4 (-5..-8), separated by a gap at -3,-4
+        for offset in (5, 6, 7, 8):
+            HabitExecution.objects.create(habit=habit, date=today - timedelta(days=offset))
+
+        ctx = recommendations.build_history_context(user)
+        row = next(h for h in ctx["habits"] if h["name"] == "Bieganie")
+
+        self.assertEqual(row["current_streak"], 3)
+        self.assertEqual(row["longest_streak"], 4)
+
+
+class BuildMessagesLongestStreakTests(TestCase):
+    def _ctx(self, longest):
+        return {"habits": [{
+            "name": "Bieganie", "done_count": 7, "current_streak": 3,
+            "longest_streak": longest, "completion_rate": 23,
+            "weakest_weekday": None, "last_break": None,
+        }]}
+
+    def test_prompt_includes_longest_streak_when_present(self):
+        messages = recommendations.build_messages(self._ctx(longest=5))
+        user_msg = messages[1]["content"]
+        self.assertIn("najdłuższa seria", user_msg.lower())
+        self.assertIn("5", user_msg)
+
+    def test_prompt_omits_longest_streak_when_trivial(self):
+        messages = recommendations.build_messages(self._ctx(longest=1))
+        self.assertNotIn("najdłuższa seria", messages[1]["content"].lower())
 
 
 @override_settings(SECURE_SSL_REDIRECT=False)
