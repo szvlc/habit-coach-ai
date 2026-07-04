@@ -41,3 +41,17 @@
 - **Problem**: W S-04 testy z mockiem LLM przeszły, ale prod padł dwukrotnie: nieprawidłowy slug modelu (`claude-haiku-4-5` vs `-4.5` → 404) i brak `max_tokens` (default ~64k → 402 przy małym saldzie). Mock nie waliduje sluga/limitów/auth realnego gateway.
 - **Rule**: Przy integracji zewnętrznego LLM zrób prod-smoke z JEDNYM realnym wywołaniem przed sign-off (mock nie sprawdzi sluga/limitów/auth); zawsze ustaw jawny `max_tokens`; zweryfikuj dokładny slug modelu względem żywej listy modeli dostawcy.
 - **Applies to**: plan, implement, impl-review
+
+## Zmiana „tylko styling" musi weryfikować, że nie usuwa zależności runtime (JS/`<script>`)
+
+- **Context**: Każda faza opisana jako „kosmetyczna" / „tylko CSS/styling" edytująca szablon bazowy (np. `base.html`), który ładuje biblioteki JS przez `<script>` (HTMX/Alpine/itp.) i deklaruje atrybuty od nich zależne (`hx-*`).
+- **Problem**: Redesign przepisujący `base.html` (commit `2910944`) zgubił `<script>` HTMX, zostawiając atrybuty `hx-*` — rekomendacja AI przestała się odświeżać, a proaktywna auto-rekomendacja nie odpalała. Toggle działał dzięki fallbackowi formularza, co maskowało regresję aż do zgłoszenia użytkownika. Naprawione w `96a31ec`.
+- **Rule**: Przy „stylingowych" zmianach szablonu bazowego zweryfikuj, że nie zniknęły tagi `<script>`/zależności JS; dodaj test regresyjny sprawdzający obecność biblioteki na renderowanej stronie (np. `assertContains(response, "htmx.org")`).
+- **Applies to**: implement, impl-review
+
+## Zależności frontendowe z CDN: pin dokładnej wersji + SRI przed prod-hardeningiem
+
+- **Context**: Każda strona (zwłaszcza uwierzytelniona) ładująca biblioteki JS/CSS z publicznego CDN (Tailwind Play `cdn.tailwindcss.com`, HTMX/Alpine z `unpkg`/`jsdelivr`).
+- **Problem**: Tailwind + HTMX ładowane bez Subresource Integrity i bez pinu dokładnej wersji (`htmx.org@2` = floating major). Kompromitacja/hijack CDN = dowolny JS w sesji użytkownika. Dodatkowo `cdn.tailwindcss.com` jest oficjalnie „not for production" (runtime compile, duży payload).
+- **Rule**: Na MVP CDN jest akceptowalny, ale przed prod-hardeningiem przypnij dokładne wersje + dodaj `integrity`/SRI (z `crossorigin`), a Tailwind przenieś do kroku build zamiast runtime CDN.
+- **Applies to**: plan, implement, impl-review
