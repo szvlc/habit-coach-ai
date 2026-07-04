@@ -1,0 +1,24 @@
+{
+  "name": "10xdevs",
+  "version": "1.0.0",
+  "description": "Aplikacja webowa do śledzenia codziennych nawyków, w której użytkownik dostaje **rekomendacje AI ugruntowane w jego własnej historii logowania** — a nie generyczne porady. Zamiast „pij więcej wody\", system odwołuje się do konkretów: nazw nawyków, słabych dni tygodnia, streaków i ostatnich przerw.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/szvlc/habit-coach-ai.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/szvlc/habit-coach-ai/issues"
+  },
+  "homepage": "https://github.com/szvlc/habit-coach-ai#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.61.1"
+  }
+}

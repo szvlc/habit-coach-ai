@@ -17,6 +17,13 @@ staticfiles/
 runserver_out.log
 runserver_err.log
 
+# Node / Playwright (E2E tooling)
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
 # Secrets / env
 .env
 .env.local
