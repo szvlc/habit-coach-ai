@@ -1,0 +1,5 @@
+# 10x-cli writes toolkit files with LF and hashes them against .10x-cli-manifest.json.
+# With core.autocrlf=true, a CRLF working-tree copy hash-mismatches the manifest and
+# `10x get` falsely reports "conflict_skipped", silently skipping real updates.
+# Force LF on checkout for everything the CLI manages so future lesson fetches are clean.
+.claude/** text eol=lf
