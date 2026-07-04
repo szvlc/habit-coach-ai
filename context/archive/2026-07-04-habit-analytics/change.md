@@ -1,10 +1,10 @@
 ---
 change_id: habit-analytics
 title: Dashboard z wizualizacją postępów nawyków (30 dni)
-status: implemented
+status: archived
 created: 2026-07-04
 updated: 2026-07-04
-archived_at: null
+archived_at: 2026-07-04T14:20:31Z
 ---
 
 ## Notes
