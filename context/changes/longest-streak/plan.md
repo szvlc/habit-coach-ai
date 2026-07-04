@@ -82,10 +82,10 @@ Brak.
 
 #### Automatyczne
 
-- [x] 1.1 Czysta funkcja `longest_streak(dates)` (RED→GREEN→REFACTOR; testy: pusty/1/kolejne/luka/kolejność)
-- [x] 1.2 `build_history_context` zwraca per-nawyk `longest_streak` (test integracyjny)
-- [x] 1.3 `build_messages` dołącza sygnał „najdłuższa seria" (test promptu)
-- [x] 1.4 `manage.py test` (całość) — green (87) + `check`
+- [x] 1.1 Czysta funkcja `longest_streak(dates)` (RED→GREEN→REFACTOR; testy: pusty/1/kolejne/luka/kolejność) — 17e0840
+- [x] 1.2 `build_history_context` zwraca per-nawyk `longest_streak` (test integracyjny) — 17e0840
+- [x] 1.3 `build_messages` dołącza sygnał „najdłuższa seria" (test promptu) — 17e0840
+- [x] 1.4 `manage.py test` (całość) — green (87) + `check` — 17e0840
 
 #### Ręczne
 

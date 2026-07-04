@@ -1,7 +1,7 @@
 ---
 change_id: longest-streak
 title: Najdłuższy streak jako metryka i sygnał dla AI
-status: planned
+status: implemented
 created: 2026-07-04
 updated: 2026-07-04
 archived_at: null
