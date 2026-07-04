@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import View
 from django.views.generic import CreateView, TemplateView, UpdateView
+from openai import OpenAIError
 
 from .forms import HabitForm
 from .models import Habit, HabitExecution, Recommendation
@@ -143,7 +144,10 @@ class RecommendationGenerateView(LoginRequiredMixin, View):
             )
         try:
             text, model_used = generate_recommendation(request.user)
-        except Exception:
+        except OpenAIError:
+            # Only transient LLM/API failures degrade to a friendly message.
+            # A programming error (bug in prompt/grounding/DB) is NOT swallowed —
+            # it propagates so it surfaces instead of masquerading as "try again".
             logger.exception("OpenRouter recommendation generation failed")
             return self._render(
                 request,
@@ -195,7 +199,10 @@ class RecommendationAutoView(LoginRequiredMixin, View):
                     model_used,
                     recommendation.grounded,
                 )
-            except Exception:
+            except OpenAIError:
+                # Silent on transient LLM/API failure (FR-013: no banner, retry
+                # next load). Non-API exceptions (real bugs) are left to propagate
+                # rather than being silently swallowed as "generation failed".
                 logger.exception("proactive recommendation generation failed")
         return render(
             request,

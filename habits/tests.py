@@ -6,6 +6,7 @@ from django.db import IntegrityError, transaction
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
+from openai import OpenAIError
 
 from . import recommendations
 from .models import Habit, HabitExecution, Recommendation
@@ -379,11 +380,20 @@ class RecommendationGenerateViewTests(TestCase):
 
     def test_generate_api_error_shows_message_no_save(self):
         self._seed_data()
-        with patch("habits.views.generate_recommendation", side_effect=RuntimeError("boom")):
+        with patch("habits.views.generate_recommendation", side_effect=OpenAIError("boom")):
             response = self.client.post(self.url, HTTP_HX_REQUEST="true")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Recommendation.objects.filter(user=self.user).count(), 0)
         self.assertContains(response, "Nie udało się")
+
+    def test_generate_propagates_non_api_error(self):
+        # A programming bug (not an OpenAI error) must NOT be swallowed as
+        # "try again" — it propagates so the defect surfaces.
+        self._seed_data()
+        with patch("habits.views.generate_recommendation", side_effect=RuntimeError("bug")):
+            with self.assertRaises(RuntimeError):
+                self.client.post(self.url, HTTP_HX_REQUEST="true")
+        self.assertEqual(Recommendation.objects.filter(user=self.user).count(), 0)
 
     def test_generate_uses_only_request_user_data(self):
         self._seed_data()
@@ -527,11 +537,20 @@ class RecommendationAutoViewTests(TestCase):
 
     def test_auto_silent_on_error(self):
         self._reach_threshold()
-        with patch("habits.views.generate_recommendation", side_effect=RuntimeError("boom")):
+        with patch("habits.views.generate_recommendation", side_effect=OpenAIError("boom")):
             response = self.client.post(self.url, HTTP_HX_REQUEST="true")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Recommendation.objects.filter(user=self.user).count(), 0)
         self.assertTrue(recommendations.auto_recommendation_due(self.user))
+
+    def test_auto_propagates_non_api_error(self):
+        # Proactive path stays silent on LLM failure, but a real bug must not be
+        # swallowed — it propagates instead of being logged as "generation failed".
+        self._reach_threshold()
+        with patch("habits.views.generate_recommendation", side_effect=RuntimeError("bug")):
+            with self.assertRaises(RuntimeError):
+                self.client.post(self.url, HTTP_HX_REQUEST="true")
+        self.assertEqual(Recommendation.objects.filter(user=self.user).count(), 0)
 
     def test_auto_requires_login(self):
         self.client.logout()
