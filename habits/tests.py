@@ -538,3 +538,71 @@ class RecommendationAutoViewTests(TestCase):
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse("login"), response.url)
+
+
+@override_settings(SECURE_SSL_REDIRECT=False)
+class HabitAnalyticsViewTests(TestCase):
+    def setUp(self):
+        self.owner = User.objects.create_user(email="owner@example.com", password=STRONG_PASSWORD)
+        self.url = reverse("habits:analytics")
+
+    def test_analytics_requires_login(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("login"), response.url)
+
+    def test_analytics_shows_only_own_habits(self):
+        other = User.objects.create_user(email="other@example.com", password=STRONG_PASSWORD)
+        Habit.objects.create(user=self.owner, name="MojNawyk")
+        Habit.objects.create(user=other, name="CudzyNawyk")
+        self.client.force_login(self.owner)
+        response = self.client.get(self.url)
+        self.assertContains(response, "MojNawyk")
+        self.assertNotContains(response, "CudzyNawyk")
+
+    def test_analytics_metrics_reflect_executions(self):
+        habit = Habit.objects.create(user=self.owner, name="Bieganie")
+        today = timezone.localdate()
+        HabitExecution.objects.create(habit=habit, date=today)
+        HabitExecution.objects.create(habit=habit, date=today - timedelta(days=1))
+        self.client.force_login(self.owner)
+        response = self.client.get(self.url)
+        row = next(h for h in response.context["habits"] if h["name"] == "Bieganie")
+        self.assertEqual(row["current_streak"], 2)
+        self.assertEqual(row["done_count"], 2)
+
+    def test_analytics_empty_state_when_no_habits(self):
+        self.client.force_login(self.owner)
+        response = self.client.get(self.url)
+        self.assertContains(response, "Brak danych")
+
+    def test_dashboard_has_analytics_link(self):
+        Habit.objects.create(user=self.owner, name="X")  # link row renders only with habits
+        self.client.force_login(self.owner)
+        response = self.client.get(reverse("accounts:dashboard"))
+        self.assertContains(response, reverse("habits:analytics"))
+
+
+@override_settings(SECURE_SSL_REDIRECT=False)
+class BuildDailyCompletionTests(TestCase):
+    def test_daily_completion_counts_only_own_active_habits(self):
+        owner = User.objects.create_user(email="o@example.com", password=STRONG_PASSWORD)
+        other = User.objects.create_user(email="ot@example.com", password=STRONG_PASSWORD)
+        today = timezone.localdate()
+        h1 = Habit.objects.create(user=owner, name="A")
+        h2 = Habit.objects.create(user=owner, name="B")
+        archived = Habit.objects.create(user=owner, name="Arch", archived=True)
+        other_habit = Habit.objects.create(user=other, name="C")
+        HabitExecution.objects.create(habit=h1, date=today)
+        HabitExecution.objects.create(habit=h2, date=today)
+        HabitExecution.objects.create(habit=archived, date=today)   # archived -> excluded
+        HabitExecution.objects.create(habit=other_habit, date=today)  # other user -> excluded
+
+        daily = recommendations.build_daily_completion(owner)
+
+        self.assertEqual(len(daily), 30)
+        latest = daily[-1]
+        self.assertEqual(latest["date"], today)
+        self.assertEqual(latest["total"], 2)        # only owner's active habits
+        self.assertEqual(latest["done_count"], 2)   # h1 + h2 (not archived / other user)
+        self.assertEqual(latest["pct"], 100)

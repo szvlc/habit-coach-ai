@@ -11,15 +11,16 @@ from django.views.generic import CreateView, TemplateView, UpdateView
 from .forms import HabitForm
 from .models import Habit, HabitExecution, Recommendation
 from .recommendations import (
+    HISTORY_DAYS,
     auto_recommendation_due,
+    build_daily_completion,
+    build_history_context,
     can_generate,
     generate_recommendation,
     is_grounded,
 )
 
 logger = logging.getLogger(__name__)
-
-HISTORY_DAYS = 30
 
 
 class HabitCreateView(LoginRequiredMixin, CreateView):
@@ -108,6 +109,24 @@ class HabitHistoryView(LoginRequiredMixin, TemplateView):
             }
             for habit in habits
         ]
+        return context
+
+
+class HabitAnalyticsView(LoginRequiredMixin, TemplateView):
+    """Server-rendered 30-day analytics (post-MVP): per-habit metric cards plus
+    an aggregate daily-completion bar chart. Pure presentation over existing
+    data — no new model, no JS/CDN dependency (see change habit-analytics)."""
+
+    template_name = "habits/analytics.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        history = build_history_context(user)
+        context["habits"] = history["habits"]
+        context["today"] = history["today"]
+        context["daily"] = build_daily_completion(user)
+        context["history_days"] = HISTORY_DAYS
         return context
 
 

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Analityka · HabitCoach AI{% endblock %}
+
+{% block container_width %}max-w-2xl{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold tracking-tight">Analityka <span class="text-gray-400 font-medium text-lg">· 30 dni</span></h1>
+        <a href="{% url 'accounts:dashboard' %}" class="link">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Dashboard
+        </a>
+    </div>
+
+    {% if habits %}
+        <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-3">Dzienne ukończenie</h2>
+        <div class="flex items-end gap-0.5 h-32 mb-1" role="img"
+             aria-label="Wykres dziennego ukończenia nawyków przez ostatnie 30 dni">
+            {% for day in daily %}
+                <div class="flex-1 h-full flex items-end bg-gray-100 rounded-sm overflow-hidden"
+                     title="{{ day.date|date:'Y-m-d' }}: {{ day.done_count }}/{{ day.total }}">
+                    <div class="w-full rounded-sm {% if day.date == today %}bg-indigo-600{% else %}bg-indigo-400{% endif %}"
+                         style="height: {{ day.pct }}%"></div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="flex justify-between text-xs text-gray-400 mb-8">
+            <span>{{ daily.0.date|date:"j M" }}</span>
+            <span>dziś</span>
+        </div>
+
+        <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-3">Nawyki</h2>
+        <div class="grid gap-3 sm:grid-cols-2">
+            {% for h in habits %}
+                <div class="rounded-lg border border-gray-100 bg-gray-50/60 p-4">
+                    <p class="font-medium truncate mb-2">{{ h.name }}</p>
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
+                        <span>streak: <strong class="text-gray-900">{{ h.current_streak }}</strong></span>
+                        <span>ukończenie: <strong class="text-gray-900">{{ h.completion_rate }}%</strong></span>
+                        <span>wykonań: <strong class="text-gray-900">{{ h.done_count }}</strong>/{{ history_days }}</span>
+                    </div>
+                    {% if h.weakest_weekday %}
+                        <p class="text-xs text-gray-400 mt-2">najsłabszy dzień: {{ h.weakest_weekday }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p class="text-gray-600 mb-4">Brak danych do analizy — dodaj nawyk i zaloguj wykonania.</p>
+            <a href="{% url 'habits:add' %}" class="btn-primary">Dodaj nawyk</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

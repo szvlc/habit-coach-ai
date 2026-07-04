@@ -89,6 +89,32 @@ def build_history_context(user):
     return {"today": today, "start": start, "days": days, "habits": rows}
 
 
+def build_daily_completion(user):
+    """Per-day completion over the 30-day window for one user's active habits.
+
+    Returns a list of HISTORY_DAYS dicts [{date, done_count, total, ratio, pct}]:
+    total is the count of the user's active habits, done_count how many were
+    executed that day, ratio/pct the fraction (0 when total==0). Draws only from
+    `user` (history_for already excludes archived habits and other users)."""
+    today = timezone.localdate()
+    start = today - timedelta(days=HISTORY_DAYS - 1)
+    days = [start + timedelta(days=offset) for offset in range(HISTORY_DAYS)]
+    total = Habit.objects.active(user).count()
+    counts = {}
+    for d in HabitExecution.objects.history_for(user, start).values_list("date", flat=True):
+        counts[d] = counts.get(d, 0) + 1
+    return [
+        {
+            "date": d,
+            "done_count": counts.get(d, 0),
+            "total": total,
+            "ratio": (counts.get(d, 0) / total) if total else 0,
+            "pct": round(100 * counts.get(d, 0) / total) if total else 0,
+        }
+        for d in days
+    ]
+
+
 def build_messages(context):
     """Build chat messages with an explicit grounding instruction (Polish)."""
     system = (
