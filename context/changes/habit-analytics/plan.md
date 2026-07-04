@@ -160,15 +160,15 @@ Brak — zmiana wyłącznie prezentacji + jedna czysta funkcja. Zero zmian model
 
 #### Automatyczne
 
-- [ ] 1.1 `build_daily_completion` + `HabitAnalyticsView` + trasa + szablon + link + centralizacja HISTORY_DAYS
-- [ ] 1.2 `manage.py check` przechodzi
-- [ ] 1.3 `manage.py test habits accounts` — zielone (+~6 nowych)
-- [ ] 1.4 `manage.py test` (całość) — green
-- [ ] 1.5 `manage.py check --deploy` (DEBUG=False) — dokładnie W005+W021
+- [x] 1.1 `build_daily_completion` + `HabitAnalyticsView` + trasa + szablon + link + centralizacja HISTORY_DAYS — 9ab8db2
+- [x] 1.2 `manage.py check` przechodzi — 9ab8db2
+- [x] 1.3 `manage.py test habits accounts` — zielone (+6 nowych) — 9ab8db2
+- [x] 1.4 `manage.py test` (całość) — green (79) — 9ab8db2
+- [x] 1.5 `manage.py check --deploy` (DEBUG=False) — dokładnie W005+W021 — 9ab8db2
 
 #### Ręczne
 
-- [ ] 1.6 Zalogowany z danymi: karty + słupki 30 dni, dziś wyróżniony
-- [ ] 1.7 Niezalogowany: redirect na login
-- [ ] 1.8 Bez nawyków: pusty stan
-- [ ] 1.9 Dashboard: link „Analityka" działa
+- [x] 1.6 Zalogowany z danymi: karty + słupki 30 dni (30 barów), dziś wyróżniony — 9ab8db2
+- [x] 1.7 Niezalogowany: redirect na login — 9ab8db2
+- [x] 1.8 Bez nawyków: pusty stan — 9ab8db2
+- [x] 1.9 Dashboard: link „Analityka" działa — 9ab8db2
