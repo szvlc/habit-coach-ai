@@ -20,7 +20,7 @@ allowed-tools:
 Porównaj rzeczywistą pracę implementacyjną z oryginalnym planem, aby wychwycić odchylenia, niebezpieczne decyzje, naruszenia architektury i niewłaściwe użycie wzorców, zanim się skumulują.
 
 Dwie ziarnistości:
-- **Przegląd fazy**: po pojedynczej fazie — szybki, skupiony na zmianach w tej fazie
+- **Przegląd fazy**: po pojedynczej fazie — szybki, skoncentrowany na zmianach w tej fazie
 - **Pełny przegląd planu**: po wszystkich fazach — kompleksowe sprawdzenie
 
 Dwa tryby:
@@ -43,9 +43,9 @@ TaskCreate: "Przegląd implementacji" / activeForm "Ładowanie kontekstu"
 
 1. **Wczytaj cały plik planu** — bez limitu/offsetu.
 2. **Wczytaj `context/foundation/lessons.md` jeśli istnieje** i użyj zaakceptowanych reguł jako priorytetów podczas skanowania w poszukiwaniu ustaleń — odchylenie, które narusza znaną, powtarzającą się regułę, jest silniejszym sygnałem niż ogólna uwaga stylistyczna.
-3. **Wczytaj kanoniczny stan z sekcji `## Progress` planu** (patrz `references/progress-format.md`): ukończenie = `count([x]) / count([ ] + [x])`; bieżąca faza = faza zawierająca pierwsze `- [ ]` (lub ostatnia faza, jeśli wszystkie są ukończone). Wczytaj również sąsiedni `change.md` dla `status` i `updated`.
+3. **Wczytaj kanoniczny stan z sekcji `## Progress` planu** (patrz `references/progress-format.md`): ukończenie = `count([x]) / count([ ] + [x])`; bieżąca faza = faza zawierająca pierwszy `- [ ]` (lub ostatnia faza, jeśli wszystkie są ukończone). Wczytaj również sąsiedni `change.md` dla `status` i `updated`.
 4. **Zakres**: żądana konkretna faza → tylko ta faza; w przeciwnym razie wszystkie fazy, których pola wyboru postępu są w pełni `[x]` (tj. ukończone fazy).
-5. **Wyodrębnij** z przeglądanych faz: ścieżki plików z "Changes Required", decyzje architektoniczne, kryteria sukcesu (punkty Automatyczne/Ręczne w blokach faz + ich lustrzane odbicie `[ ]`/`[x]` w Progress) oraz listę "What We're NOT Doing" (ograniczenia zakresu).
+5. **Wyodrębnij** z przeglądanych faz: ścieżki plików z "Changes Required", decyzje architektoniczne, kryteria sukcesu (punkty automatyczne/ręczne w blokach faz + ich lustrzane odbicie `[ ]`/`[x]` w postępie) oraz listę "What We're NOT Doing" (bariery zakresu).
 6. **Wykrywanie zakresu Git** — co faktycznie się zmieniło:
    ```bash
    PLAN_DATE="<YYYY-MM-DD from filename>"
@@ -65,14 +65,14 @@ Nie wczytuj każdego zmienionego pliku do głównego kontekstu — pozwól podag
 
 TaskUpdate: activeForm "Zbieranie dowodów"
 
-Uruchom **dwa** podagenty jednocześnie. Każdy otrzymuje ukierunkowany kontekst — nie wrzucaj całego planu do obu.
+Uruchom **dwóch** podagentów jednocześnie. Każdy otrzymuje ukierunkowany kontekst — nie wrzucaj całego planu do obu.
 
 **Agent 1 — Wykrywanie odchyleń od planu** (`subagent_type: "general-purpose"`)
 
 Daj mu: tekst "Changes Required" dla przeglądanych faz, listę ścieżek plików do odczytania.
 
 Instrukcje: dla każdej zaplanowanej zmiany, przeczytaj rzeczywisty plik i zweryfikuj zgodność implementacji z zamierzeniem. Sprawdź:
-- Zmiany zaimplementowane inaczej niż zaplanowano (niezgodność intencji, nie formatowania)
+- Zmiany zaimplementowane inaczej niż planowano (niezgodność intencji, nie formatowania)
 - Zaplanowane elementy pominięte bez dokumentacji
 - Dodatki nieopisane w planie (rozszerzenie zakresu)
 
@@ -96,7 +96,7 @@ Instrukcje:
 
 Zgłoś każde ustalenie z: plikiem, numerem linii, kategorią, ważnością (CRITICAL / WARNING / OBSERVATION), opisem, rekomendacją.
 
-## Krok 3: Weryfikacja kryteriów sukcesu
+## Krok 3: Zweryfikuj kryteria sukcesu
 
 TaskUpdate: activeForm "Weryfikacja kryteriów sukcesu"
 
@@ -110,13 +110,13 @@ Dla każdej przeglądanej fazy:
 
 TaskUpdate: activeForm "Kompilowanie ustaleń"
 
-Każde ustalenie zawiera:
+Każde ustalenie ma:
 - **ID**: F1, F2, F3…
 - **Ważność**: CRITICAL / WARNING / OBSERVATION (jak źle, jeśli zignorowane)
 - **Wpływ**: LOW / MEDIUM / HIGH (ile uwagi wymaga decyzja)
 - **Wymiar**: Plan Adherence / Scope Discipline / Safety & Quality / Architecture / Pattern Consistency / Success Criteria
 - **Tytuł**: jedna linia
-- **Lokalizacja**: `file:line` (lub "N/A" dla brakujących elementów)
+- **Lokalizacja**: `plik:linia` (lub "N/A" dla brakujących elementów)
 - **Szczegóły**: co jest nie tak z dowodami — plan vs. rzeczywistość, lub kod vs. oczekiwania
 - **Opcje naprawy**: 1 lub 2 (patrz poniżej)
 
@@ -132,7 +132,7 @@ Ortogonalny do ważności. CRITICAL z LOW wpływem (oczywista jednowierszowa pop
 
 ### Opcje naprawy
 
-Domyślnie **jedna** poprawka. Oferuj dwie tylko wtedy, gdy istnieje prawdziwy kompromis, który inteligentny recenzent chciałby rozważyć (np. "załataj miejsce wywołania" vs. "napraw to u źródła"). Jeśli wymyślasz słabą drugą opcję, nie rób tego — przedstaw jedną i przejdź dalej.
+Domyślnie **jedna** poprawka. Oferuj dwie tylko wtedy, gdy istnieje prawdziwy kompromis, który inteligentny recenzent chciałby rozważyć (np. "załataj miejsce wywołania" vs. "napraw to u źródła"). Jeśli wymyślasz słabą drugą opcję, nie rób tego — przedstaw jedną i idź dalej.
 
 **Ustalenia o NISKIM wpływie**: tylko `Fix: [jedna linia]`. Hałas nie jest pomocny, gdy odpowiedź jest oczywista.
 
@@ -148,16 +148,16 @@ Oferując dwie opcje, oznacz dokładnie jedną `⭐ Recommended`.
 PASS / WARNING / FAIL na wymiar:
 - **Zgodność z planem** — zaplanowane zmiany zaimplementowane zgodnie z opisem? FAIL w przypadku MISSING lub poważnego DRIFT.
 - **Dyscyplina zakresu** — granice "nie robimy" przestrzegane? WARNING, jeśli istnieją dodatkowe zmiany, ale są nieszkodliwe.
-- **Bezpieczeństwo i jakość** — bezpieczeństwo, wydajność, niezawodność, bezpieczeństwo danych. FAIL w przypadku każdego CRITICAL ustalenia.
+- **Bezpieczeństwo i jakość** — bezpieczeństwo, wydajność, niezawodność, bezpieczeństwo danych. FAIL w przypadku każdego ustalenia CRITICAL.
 - **Architektura** — granice modułów, kierunek zależności, uzasadnienie abstrakcji. FAIL w przypadku naruszeń.
 - **Spójność wzorców** — zgodność z istniejącymi konwencjami. WARNING w przypadku drobnych niespójności.
 - **Kryteria sukcesu** — automatyczne testy przechodzą, ręczne testy zaadresowane. FAIL w przypadku automatycznych błędów.
 
 ### Ogólny werdykt
 
-- **ZAAKCEPTOWANY** — wszystkie PASS, lub PASS z ≤2 drobnymi ostrzeżeniami
+- **ZAAKCEPTOWANO** — wszystkie PASS, lub PASS z ≤2 drobnymi ostrzeżeniami
 - **WYMAGA UWAGI** — wiele ostrzeżeń lub 1 niekrytyczny FAIL
-- **ODRZUCONY** — każdy krytyczny FAIL (bezpieczeństwo, poważne odchylenie, bezpieczeństwo danych, nieudane testy)
+- **ODRZUCONO** — każdy krytyczny FAIL (bezpieczeństwo, poważne odchylenie, bezpieczeństwo danych, nieudane testy)
 
 Sortuj ustalenia według ważności: CRITICAL → WARNING → OBSERVATION. Ogranicz do 10 — skonsoliduj powiązane ustalenia, jeśli jest ich więcej.
 
@@ -216,7 +216,7 @@ Zwykły tekst, rysowanie ramek. Wymiary PASS pojawiają się tylko w tabeli werd
     Lokalizacja:  src/api/routes.ts:18
 
     Szczegóły:
-    Nowy punkt końcowy GET /api/status nie jest w planie. Funkcjonalność jest
+    Nowy punkt końcowy GET /api/status nie znajduje się w planie. Funkcjonalność jest
     związana z zaplanowaną pracą, ale rozszerza publiczną powierzchnię API.
 
     Poprawka A ⭐ Zalecana: Udokumentuj w planie jako aneks
@@ -255,17 +255,17 @@ Zwykły tekst, rysowanie ramek. Wymiary PASS pojawiają się tylko w tabeli werd
 ### Zasady formatowania raportu
 
 - **Linia tytułu ustalenia** zawiera tylko ID i krótki tytuł — nic więcej. Wszystko inne znajduje się poniżej jako oznaczone pola, dzięki czemu każdy wiersz jest krótki i łatwy do zeskanowania.
-- **Zawsze łącz ikony ze słowem.** Nigdy nie używaj samej ikony jako jedynego sygnału — `❌ KRYTYCZNE`, a nie tylko `❌`. Dzięki temu raport jest czytelny podczas szybkiego przeglądania i nie zmusza użytkownika do zapamiętywania znaczenia każdej ikony.
-- **Wpływ zawsze zawiera swoje jednowierszowe znaczenie** (skopiuj z tabeli Wpływ — "stawka architektoniczna; pomyśl dokładnie przed podjęciem decyzji" / "prawdziwy kompromis; zatrzymaj się, aby to przemyśleć" / "szybka decyzja; poprawka jest oczywista i wąsko zakrojona"). Dzięki temu LOW/MEDIUM/HIGH są samoobjaśniające się w miejscu użycia, zamiast polegać na tym, że użytkownik zapamięta tabelę.
-- Ważność, Wpływ, Wymiar, Lokalizacja znajdują się każdy w osobnej linii z wyrównanymi etykietami. Szczegóły zaczynają się w osobnej linii pod etykietą `Detail:`, dzięki czemu mogą naturalnie zawijać się.
+- **Zawsze łącz ikony ze słowem.** Nigdy nie używaj samej ikony jako jedynego sygnału — `❌ KRYTYCZNE`, a nie tylko `❌`. Dzięki temu raport jest czytelny podczas przeglądania i nie zmusza użytkownika do zapamiętywania znaczenia każdej ikony.
+- **Wpływ zawsze zawiera swoje jednowierszowe znaczenie** (skopiuj z tabeli Wpływ — "stawka architektoniczna; pomyśl dokładnie przed podjęciem decyzji" / "prawdziwy kompromis; zatrzymaj się, aby to przemyśleć" / "szybka decyzja; poprawka jest oczywista i wąsko zakrojona"). Dzięki temu LOW/MEDIUM/HIGH są samoobjaśniające w miejscu użycia, zamiast polegać na tym, że użytkownik zapamięta tabelę.
+- Ważność, Wpływ, Wymiar, Lokalizacja znajdują się na osobnych liniach z wyrównanymi etykietami. Szczegóły zaczynają się na osobnej linii pod etykietą `Detail:`, dzięki czemu mogą naturalnie zawijać się.
 
 ### Zapisywanie raportu (zawsze)
 
-**Każda ścieżka przez tę umiejętność utrwala raport i oznacza zmianę** — Triage teraz, Triage później i Done wszystkie zapisują plik. To pozwala `/10x-archive` i `/10x-status` zobaczyć przegląd i utrzymuje poprawność `change.md.status`. Zrób to *przed* przedstawieniem opcji kontynuacji — nigdy warunkowo i nigdy tylko w gałęziach "zapisz".
+**Każda ścieżka przez tę umiejętność utrwala raport i oznacza zmianę** — Triage teraz, Triage później i Done wszystkie zapisują plik. To pozwala `/10x-archive` i `/10x-status` zobaczyć przegląd i utrzymuje poprawność `change.md.status`. Zrób to *przed* przedstawieniem opcji kontynuacji — nigdy warunkowo i nigdy tylko na gałęziach "zapisz".
 
 1. **Zapisz plik raportu** do `context/changes/<change-id>/reviews/impl-review.md` (lub `context/changes/<change-id>/reviews/impl-review-phase-N.md` dla przeglądu ograniczonego do fazy), używając poniższego formatu. Utwórz katalog `reviews/`, jeśli nie istnieje.
 2. **Oznacz `change.md`**: ustaw `status: impl_reviewed` i `updated: <dzisiaj>`. Raz, tutaj — niezależnie od tego, którą opcję kontynuacji wybierze użytkownik. (Jeśli pole `change.md` jest już `impl_reviewed`, po prostu odśwież `updated`.)
-3. Jeśli użytkownik później sortuje, raport na dysku jest kopią roboczą: jego pola `Decision:` są aktualizowane na bieżąco, gdy każde ustalenie jest rozstrzygane (Krok 5), a wszelkie dalsze działania "napraw w planie/kodzie" są umieszczane w kolejce do `context/changes/<change-id>/follow-ups/review-fixes.md`.
+3. Jeśli użytkownik później przeprowadzi sortowanie, raport na dysku jest kopią roboczą: jego pola `Decision:` są aktualizowane na bieżąco, gdy każde ustalenie jest rozstrzygane (Krok 5), a wszelkie dalsze działania "napraw w planie/kodzie" są kolejkowane do `context/changes/<change-id>/follow-ups/review-fixes.md`.
 
 ```markdown
 <!-- IMPL-REVIEW-REPORT -->
@@ -274,7 +274,7 @@ Zwykły tekst, rysowanie ramek. Wymiary PASS pojawiają się tylko w tabeli werd
 - **Plan**: [ścieżka pliku planu]
 - **Zakres**: Faza [N] z [Całkowita]
 - **Data**: RRRR-MM-DD
-- **Werdykt**: [ZAAKCEPTOWANY/WYMAGA UWAGI/ODRZUCONY]
+- **Werdykt**: [ZAAKCEPTOWANO/WYMAGA UWAGI/ODRZUCONO]
 - **Ustalenia**: [N krytycznych] [N ostrzeżeń] [N obserwacji]
 
 ## Werdykty
@@ -310,7 +310,7 @@ Zwykły tekst, rysowanie ramek. Wymiary PASS pojawiają się tylko w tabeli werd
 - **Wpływ**: 🔬 WYSOKI — stawka architektoniczna; pomyśl dokładnie przed podjęciem decyzji
 - **Wymiar**: Dyscyplina zakresu
 - **Lokalizacja**: src/api/routes.ts:18
-- **Szczegóły**: Nowy punkt końcowy GET /api/status nie jest w planie.
+- **Szczegóły**: Nowy punkt końcowy GET /api/status nie znajduje się w planie.
 - **Poprawka A ⭐ Zalecana**: Udokumentuj w planie jako aneks
   - Siła: Zachowuje pracę; aktualizuje źródło prawdy.
   - Kompromis: Plan staje się nieco ruchomym celem.
@@ -318,7 +318,7 @@ Zwykły tekst, rysowanie ramek. Wymiary PASS pojawiają się tylko w tabeli werd
   - Martwy punkt: Zainteresowane strony pierwotnego zakresu nie są powiadamiane.
 - **Poprawka B**: Usuń i dodaj do prac uzupełniających
   - Siła: Utrzymuje ścisłą dyscyplinę zakresu.
-  - Kompromis: Traci zaimplementowaną pracę; kolejny PR później.
+  - Kompromis: Traci zaimplementowaną pracę; później kolejny PR.
   - Pewność: MEDIUM — zależy od wywołań.
   - Martwy punkt: Nie sprawdzono wywołań.
 - **Decyzja**: OCZEKUJĄCA
@@ -353,11 +353,11 @@ options:
 multiSelect: false
 ```
 
-- **Sortuj ustalenia teraz** → przejdź do Kroku 5; zapisany raport jest kopią roboczą.
-- **Sortuj później** → wydrukuj ścieżkę zapisanego raportu i przypomnij, aby uruchomić `/10x-impl-review <report-path>`.
+- **Sortuj ustalenia teraz** → przejdź do kroku 5; zapisany raport jest kopią roboczą.
+- **Sortuj później** → wydrukuj ścieżkę zapisanego raportu i przypomnij o uruchomieniu `/10x-impl-review <report-path>`.
 - **Gotowe** → wydrukuj ścieżkę zapisanego raportu i ZATRZYMAJ.
 
-Niezależnie od wyboru, plik raportu i znacznik `impl_reviewed` już istnieją na dysku — wybór decyduje tylko o tym, czy sortowanie nastąpi teraz, później, czy zostanie pozostawione użytkownikowi.
+Niezależnie od wyboru, plik raportu i znacznik `impl_reviewed` już istnieją na dysku — wybór decyduje tylko o tym, czy sortowanie odbędzie się teraz, później, czy zostanie pozostawione użytkownikowi.
 
 ## Krok 5: Interaktywne sortowanie
 
@@ -365,7 +365,7 @@ TaskUpdate: activeForm "Sortowanie"
 
 ### Tryb wznowienia
 
-Jeśli wejście nastąpiło przez zapisany plik: przeczytaj go, przeanalizuj nagłówki `### F`, odfiltruj do `Decision: PENDING`. Jeśli brak: "Wszystkie ustalenia posortowane." Gotowe.
+Jeśli wejście nastąpiło przez zapisany plik: przeczytaj go, przeanalizuj nagłówki `### F`, przefiltruj do `Decision: PENDING`. Jeśli brak: "Wszystkie ustalenia posortowane." Gotowe.
 
 ### Pętla sortowania
 
@@ -377,9 +377,9 @@ question: "F[N] — [tytuł]\n\nWażność: [ikona ważności] [WAŻNOŚĆ]\nWp�
 header: "Ustalenie [bieżące] z [całkowita pozostała liczba]"
 options:
   - label: "Zastosuj poprawkę A ⭐"
-    description: "[Jednowierszowa poprawka A]"
+    description: "[Jednowierszowy opis poprawki A]"
   - label: "Zastosuj poprawkę B"
-    description: "[Jednowierszowa poprawka B]"
+    description: "[Jednowierszowy opis poprawki B]"
   - label: "Pomiń"
     description: "Nie warto teraz naprawiać."
   - label: "Zapisz jako lekcję"
@@ -393,7 +393,7 @@ question: "F[N] — [tytuł]\n\nWażność: [ikona ważności] [WAŻNOŚĆ]\nWp�
 header: "Ustalenie [bieżące] z [całkowita pozostała liczba]"
 options:
   - label: "Napraw teraz"
-    description: "[Jednowierszowa poprawka]"
+    description: "[Jednowierszowy opis poprawki]"
   - label: "Napraw inaczej"
     description: "Inne podejście — porozmawiajmy."
   - label: "Pomiń"
@@ -409,15 +409,15 @@ multiSelect: false
 - **Zapisz jako lekcję**: wstępnie wypełnij cztery pola wpisu lekcji bezpośrednio z ustalenia — `Context` z lokalizacji ustalenia, `Problem` ze szczegółów ustalenia, `Rule` i `Applies to` pozostaw jako puste miejsca do wypełnienia przez użytkownika. Pokaż proponowany wpis jako kompletny blok markdown i poproś użytkownika o edycję / potwierdzenie za pomocą AskUserQuestion ("Zatwierdzić ten wpis?" / "Edytuj przed zapisaniem" / "Anuluj"). Po potwierdzeniu, dołącz wpis jako nową sekcję H2 do `context/foundation/lessons.md` — jeśli plik nie istnieje, utwórz go najpierw z tym kanonicznym 5-liniowym nagłówkiem (brak oddzielnego pliku szablonu; nagłówek jest osadzony w tekście):
 
   ```
-  # Wyciągnięte wnioski
+  # Wyciągnięte lekcje
 
   > Rejestr powtarzających się reguł i wzorców, tylko do dodawania. Ponownie odczytywany na początku przez /10x-frame, /10x-research, /10x-plan, /10x-plan-review, /10x-implement, /10x-impl-review.
 
   ```
 
-  Przepływ wstępnego wypełniania, a następnie potwierdzania jest kluczowym elementem UX; użytkownik musi zobaczyć cały proponowany wpis z wstępnie wypełnionym Context/Problem i mieć możliwość edycji Rule i Applies-to przed dodaniem. Po pomyślnym dodaniu, **zawsze** zadaj pytanie uzupełniające za pomocą AskUserQuestion: "Lekcja zapisana. Czy zastosować również poprawkę do bieżącego kodu?" z opcjami "Tak — napraw teraz" / "Nie — tylko lekcja". **Nigdy nie pomijaj tego pytania ani nie decyduj w imieniu użytkownika** — niezależnie od tego, czy poprawka jest trywialna, poza zakresem, czy obejmuje wiele plików, decyzja należy do użytkownika. Jeśli tak: pokaż zmianę kodu przed/po, zastosuj, oznacz `FIXED + ACCEPTED-AS-RULE: <tytuł reguły>`. Jeśli nie: oznacz `ACCEPTED-AS-RULE: <tytuł reguły>` (ustalenie pozostaje nienaprawione, reguła jest zapisana do przyszłej pracy).
-- **Pomiń** → SKIPPED. Przejdź dalej, nie dyskutuj.
-- **Inne (dowolny tekst)**: zinterpretuj intencje użytkownika. Typowe intencje: "napraw inaczej" (zwłaszcza w kontekście podwójnej poprawki) → zapytaj o preferowane podejście, zastosuj, oznacz FIXED; "zaakceptuj ryzyko" → oznacz ACCEPTED z uzasadnieniem użytkownika; "odrzuć"/"nie zgadzam się" → oznacz DISMISSED.
+  Przepływ wstępnego wypełniania, a następnie potwierdzania jest kluczowym szczegółem UX; użytkownik musi zobaczyć cały proponowany wpis z wstępnie wypełnionym Context/Problem i mieć możliwość edycji Rule i Applies-to przed dodaniem. Po pomyślnym dodaniu, **zawsze** zadaj pytanie uzupełniające za pomocą AskUserQuestion: "Lekcja zapisana. Czy zastosować również poprawkę do bieżącego kodu?" z opcjami "Tak — napraw teraz" / "Nie — tylko lekcja". **Nigdy nie pomijaj tego pytania ani nie decyduj w imieniu użytkownika** — niezależnie od tego, czy poprawka jest trywialna, poza zakresem, czy obejmuje wiele plików, decyzja należy do użytkownika. Jeśli tak: pokaż zmianę kodu przed/po, zastosuj, oznacz `FIXED + ACCEPTED-AS-RULE: <tytuł reguły>`. Jeśli nie: oznacz `ACCEPTED-AS-RULE: <tytuł reguły>` (ustalenie pozostaje nienaprawione, reguła jest zapisana do przyszłej pracy).
+- **Pomiń** → SKIPPED. Idź dalej, nie kłóć się.
+- **Inne (dowolny tekst)**: zinterpretuj intencję użytkownika. Typowe intencje: "napraw inaczej" (zwłaszcza w kontekście podwójnej poprawki) → zapytaj o preferowane podejście, zastosuj, oznacz FIXED; "zaakceptuj ryzyko" → oznacz ACCEPTED z uzasadnieniem użytkownika; "odrzuć"/"nie zgadzam się" → oznacz DISMISSED.
 
 Po każdej decyzji, zaktualizuj pole `Decision:` w zapisanym raporcie dla tego ustalenia (raport zawsze istnieje na dysku — patrz Krok 4).
 
@@ -440,11 +440,11 @@ Zaktualizuj zapisany raport o ostateczne decyzje. Oznacz zadanie przeglądu jako
 
 ## Uwagi
 
-- Jest to umiejętność **przeglądu**. Domyślnie analizuj i raportuj — dokonuj edycji podczas sortowania tylko wtedy, gdy użytkownik wyraźnie wybierze "Zastosuj poprawkę" lub "Napraw inaczej" dla konkretnego ustalenia.
-- Bądź konkretny. "src/auth/handler.ts:42 — Zapytanie SQL zbudowane z konkatenacji ciągów, podatne na wstrzyknięcie" — a nie "gdzieś może być problem z bezpieczeństwem".
+- To jest umiejętność **przeglądu**. Domyślnie analizuj i raportuj — dokonuj edycji podczas sortowania tylko wtedy, gdy użytkownik wyraźnie wybierze "Zastosuj poprawkę" lub "Napraw inaczej" dla konkretnego ustalenia.
+- Bądź konkretny. "src/auth/handler.ts:42 — Zapytanie SQL zbudowane z konkatenacji ciągów, podatne na wstrzyknięcie" — a nie "może być gdzieś problem z bezpieczeństwem".
 - Nie oznaczaj preferencji stylistycznych, chyba że mają znaczenie. Jeśli kod działa i jest zgodny z planem, drobne różnice stylistyczne od istniejącego kodu są obserwacjami, a nie ostrzeżeniami.
 - Jeśli sam plan był wadliwy (np. zaplanowano niebezpieczne podejście), oznacz to — ten przegląd wychwytuje również problemy z planem.
-- Wpływ dotyczy **wysiłku decyzyjnego**, a nie **ważności**. NISKI wpływ na CRITICAL ustalenie oznacza, że poprawka jest oczywista; WYSOKI wpływ na WARNING oznacza, że kompromis jest realny.
+- Wpływ dotyczy **wysiłku decyzyjnego**, a nie **ważności**. NISKI wpływ na ustalenie KRYTYCZNE oznacza, że poprawka jest oczywista; WYSOKI wpływ na OSTRZEŻENIE oznacza, że kompromis jest realny.
 - Dwie opcje naprawy tylko wtedy, gdy istnieje prawdziwy kompromis. Nie wymyślaj alternatyw dla trywialnych poprawek.
 - Podczas przeglądania pojedynczej fazy, nadal sprawdzaj, czy zmiany z tej fazy nie naruszyły założeń poprzednich faz. Fazy mogą wchodzić w interakcje.
 - Podczas sortowania, utrzymuj tempo. Użytkownik już przeczytał raport.
